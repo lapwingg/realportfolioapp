@@ -66,7 +66,7 @@ The project (`real-value-portfolio-app`) is a Supabase-backed Astro 6 SSR app th
 
 ### Phase 4 — CI/CD wiring
 
-- [ ] **4.1 Add `CLOUDFLARE_API_TOKEN` to GitHub repository secrets** (Settings → Secrets and variables → Actions). Use the scoped token from Step 2.1.
+- [x] **4.1 Add `CLOUDFLARE_API_TOKEN` to GitHub repository secrets** (Settings → Secrets and variables → Actions). Use the scoped token from Step 2.1.
 
 - [x] **4.2 Extend `.github/workflows/ci.yml`** — add a `deploy` job that runs only on push to `master`, after the `ci` job succeeds:
 
@@ -93,7 +93,7 @@ The project (`real-value-portfolio-app`) is a Supabase-backed Astro 6 SSR app th
 
   > **Why rebuild in the deploy job?** The `ci` job's artifact is not passed between jobs by default; a clean build in the deploy job is the safest approach for a solo project with no artifact-passing setup.
 
-- [ ] **4.3 Verify the pipeline** by merging a trivial change to `master` (e.g. a README line) and confirming the `deploy` job completes green in GitHub Actions.
+- [x] **4.3 Verify the pipeline** by merging a trivial change to `master` (e.g. a README line) and confirming the `deploy` job completes green in GitHub Actions.
 
 **Gate:** `deploy` job runs successfully end-to-end on a real push.
 
@@ -104,7 +104,7 @@ The project (`real-value-portfolio-app`) is a Supabase-backed Astro 6 SSR app th
 #### Risk R1: 10ms CPU-time limit (Medium likelihood, High impact)
 
 - [ ] **5.1 Profile the calculation route** — once FR-008/009/010/011 are implemented, run a synthetic large Allianz file (5+ years of transactions) through the API route using `wrangler dev` and time the CPU-bound work. If the calculation loop exceeds ~8ms of CPU time, upgrade to Workers Paid ($5/month) before public launch.
-- [ ] **5.2 Add the upgrade step to the pre-launch checklist** in `context/foundation/lessons.md` so it is not forgotten under deadline pressure.
+- [x] **5.2 Add the upgrade step to the pre-launch checklist** in `context/foundation/lessons.md` so it is not forgotten under deadline pressure.
 
 #### Risk R2: `analizy.pl` blocking Cloudflare IPs (Medium likelihood, High impact)
 
@@ -115,12 +115,12 @@ The project (`real-value-portfolio-app`) is a Supabase-backed Astro 6 SSR app th
 
 #### Risk R3: Wrong wrangler command under pressure (Medium likelihood, High impact)
 
-- [ ] **5.5 Add a `deploy` script to `package.json`**:
+- [x] **5.5 Add a `deploy` script to `package.json`**:
   ```json
   "deploy": "astro build && wrangler deploy"
   ```
   This makes `npm run deploy` the canonical one-command deploy and eliminates `wrangler pages deploy` as a muscle-memory risk. The CI deploy job should call this same script.
-- [ ] **5.6 Add a comment in `wrangler.jsonc`** clarifying: "This is a Workers deploy — use `wrangler deploy`, NOT `wrangler pages deploy`."
+- [x] **5.6 Add a comment in `wrangler.jsonc`** clarifying: "This is a Workers deploy — use `wrangler deploy`, NOT `wrangler pages deploy`."
 
 ---
 
