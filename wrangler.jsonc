@@ -1,6 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "10x-astro-starter",
+  // Deploy with: npx wrangler deploy  (NOT wrangler pages deploy — that skips the SSR Worker)
+  "name": "real-value-portfolio-app",
   "main": "@astrojs/cloudflare/entrypoints/server",
   "compatibility_date": "2026-05-08",
   "compatibility_flags": ["nodejs_compat"],
@@ -12,4 +13,5 @@
   "observability": {
     "enabled": true,
   },
+  "workers_dev": true,
 }
