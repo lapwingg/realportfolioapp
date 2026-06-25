@@ -320,12 +320,12 @@ Link the local Supabase project to the hosted Supabase project, push the migrati
 
 #### Automated
 
-- [x] 3.1 `npx tsc --noEmit` (via `astro check`) passes after `Database` type parametrization
-- [x] 3.2 `src/lib/database.types.ts` contains `"transactions"`, `"price_snapshots"`, `"contribution_source"`
-- [x] 3.3 `npm run build` succeeds with the typed client under the Cloudflare adapter
+- [x] 3.1 `npx tsc --noEmit` (via `astro check`) passes after `Database` type parametrization — a5710f9
+- [x] 3.2 `src/lib/database.types.ts` contains `"transactions"`, `"price_snapshots"`, `"contribution_source"` — a5710f9
+- [x] 3.3 `npm run build` succeeds with the typed client under the Cloudflare adapter — a5710f9
 
 #### Manual
 
-- [x] 3.4 Hosted Supabase dashboard shows both tables, four policies each, FORCE RLS via SQL editor
+- [x] 3.4 Hosted Supabase dashboard shows both tables, four policies each, FORCE RLS via SQL editor — a5710f9
 - [ ] 3.5 Two-user manual isolation check on the deployed app passes
-- [x] 3.6 README Database section reads coherently end-to-end
+- [x] 3.6 README Database section reads coherently end-to-end — a5710f9

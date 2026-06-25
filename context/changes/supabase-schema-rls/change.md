@@ -2,7 +2,7 @@
 change_id: supabase-schema-rls
 title: Supabase schema + Row-Level Security for user-scoped data
 roadmap_id: F-01
-status: implementing
+status: implemented
 created: 2026-06-25
 updated: 2026-06-25
 ---
