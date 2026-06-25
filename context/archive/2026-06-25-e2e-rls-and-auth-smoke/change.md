@@ -1,10 +1,10 @@
 ---
 change_id: e2e-rls-and-auth-smoke
 title: E2E smoke for auth boundary and RLS isolation
-status: implemented
+status: archived
 created: 2026-06-25
 updated: 2026-06-25
-archived_at: null
+archived_at: 2026-06-25T19:03:01Z
 ---
 
 ## Notes
