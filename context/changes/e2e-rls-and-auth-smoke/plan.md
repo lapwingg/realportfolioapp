@@ -362,33 +362,33 @@ Wire the E2E suite into `.github/workflows/ci.yml` so the two risk specs run on 
 
 #### Automated
 
-- [x] 2.1 `npm run test:e2e -- risk-01-cross-account.spec.ts` exits 0
-- [x] 2.2 `npm run lint` passes
-- [x] 2.3 No `page.waitForTimeout()` in the spec (grep guard)
-- [x] 2.4 Only `getByText` / `getByRole` locators in the spec (no CSS/XPath)
-- [x] 2.5 `tests/e2e/risk-01-cross-account.spec.ts` exists
+- [x] 2.1 `npm run test:e2e -- risk-01-cross-account.spec.ts` exits 0 — cd42430
+- [x] 2.2 `npm run lint` passes — cd42430
+- [x] 2.3 No `page.waitForTimeout()` in the spec (grep guard) — cd42430
+- [x] 2.4 Only `getByText` / `getByRole` locators in the spec (no CSS/XPath) — cd42430
+- [x] 2.5 `tests/e2e/risk-01-cross-account.spec.ts` exists — cd42430
 
 #### Manual
 
-- [x] 2.6 RLS-policy-flip mutation drill: spec fails on price-prompt-absent assertion
-- [x] 2.7 Integration test still passes after policy revert
-- [x] 2.8 Ephemeral B users deleted after the test (auth.users count stable across 3 runs)
+- [x] 2.6 RLS-policy-flip mutation drill: spec fails on price-prompt-absent assertion — cd42430
+- [x] 2.7 Integration test still passes after policy revert — cd42430
+- [x] 2.8 Ephemeral B users deleted after the test (auth.users count stable across 3 runs) — cd42430
 
 ### Phase 3: Risk #4 spec — cross-cutoff dashboard valuation
 
 #### Automated
 
-- [ ] 3.1 `npm run seed:e2e` exits 0 on a clean primary account
-- [ ] 3.2 `npm run seed:e2e && npm run test:e2e -- risk-04-cross-cutoff-valuation.spec.ts` exits 0
-- [ ] 3.3 `npm run lint` passes
-- [ ] 3.4 Re-running `npm run seed:e2e` is idempotent (DB state unchanged)
-- [ ] 3.5 Spec does NOT import from `src/lib/valuation/compute.ts` (grep guard — oracle independence)
+- [x] 3.1 `npm run seed:e2e` exits 0 on a clean primary account
+- [x] 3.2 `npm run seed:e2e && npm run test:e2e -- risk-04-cross-cutoff-valuation.spec.ts` exits 0
+- [x] 3.3 `npm run lint` passes
+- [x] 3.4 Re-running `npm run seed:e2e` is idempotent (DB state unchanged)
+- [x] 3.5 Spec does NOT import from `src/lib/valuation/compute.ts` (grep guard — oracle independence)
 
 #### Manual
 
-- [ ] 3.6 Naive-SUM mutation drill: spec fails on `toHaveText` assertion
-- [ ] 3.7 Expected PLN value confirmed hand-computed from the Phase 2 worked example (not lifted from `computeValuation` output)
-- [ ] 3.8 Dashboard visually renders the asserted numbers post-seed
+- [x] 3.6 Naive-SUM mutation drill: spec fails on `toHaveText` assertion
+- [x] 3.7 Expected PLN value confirmed hand-computed from the Phase 2 worked example (not lifted from `computeValuation` output)
+- [x] 3.8 Dashboard visually renders the asserted numbers post-seed
 
 ### Phase 4: CI gating
 

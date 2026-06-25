@@ -1,0 +1,5 @@
+Data zlecenia;Numer zlecenia;Data wyceny;Typ zlecenia;Typ;Wartość zlecenia;Wartość PLN (transakcji);Liczba jednostek (fundusz źródłowy);Liczba jednostek (fundusz docelowy);Fundusz źródłowy;Fundusz docelowy;Status zlecenia
+2024-01-10;XCC-001;2024-01-15;Pierwsze nabycie;Kwota;200,00;200,00;10,0000;;Allianz PPK 2055;;Zrealizowane
+2024-11-05;XCC-002;2024-11-07;Zamiana;Saldo;;1000,00;100,0000;100,0000;Allianz PPK 2055;Allianz Plan Emerytalny 2055;Zrealizowane
+2024-12-10;XCC-003;2024-12-15;Kolejne nabycie;Kwota;80,00;80,00;4,0000;;Allianz Plan Emerytalny 2055;;Zrealizowane
+2024-12-10;XCC-004;2024-12-15;Kolejne nabycie;Kwota;20,00;20,00;1,0000;;Allianz Plan Emerytalny 2055;;Zrealizowane

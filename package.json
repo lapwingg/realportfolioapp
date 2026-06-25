@@ -16,6 +16,7 @@
     "test:all": "vitest run",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
+    "seed:e2e": "tsx scripts/seed-e2e-primary.ts",
     "verify-parser": "tsx scripts/verify-parser.ts",
     "verify-price-parser": "tsx scripts/verify-price-parser.ts",
     "verify-scenarios": "tsx scripts/verify-scenarios.ts",
