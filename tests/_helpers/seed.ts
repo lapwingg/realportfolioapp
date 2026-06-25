@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
 import type { TestUser } from "./session";
 
-const DEFAULT_BASE_URL = "http://127.0.0.1:4321";
+const DEFAULT_BASE_URL = "http://localhost:4321";
 
 function baseUrl(): string {
   return process.env.TEST_BASE_URL ?? process.env.E2E_BASE_URL ?? DEFAULT_BASE_URL;
