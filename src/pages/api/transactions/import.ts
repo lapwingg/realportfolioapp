@@ -23,12 +23,20 @@ export const POST: APIRoute = async (context) => {
   }
 
   const categorised = categoriseRows(parsed.rows);
-  const payload = categorised.map((row) => ({
-    transaction_date: row.valuation_date,
-    source: row.source,
-    units: Number(row.units),
-    gross_amount: Number(row.gross_amount),
-  }));
+  const payload = [
+    ...categorised.map((row) => ({
+      transaction_date: row.valuation_date,
+      source: row.source,
+      units: Number(row.units),
+      gross_amount: Number(row.gross_amount),
+    })),
+    ...parsed.carryovers.map((c) => ({
+      transaction_date: c.valuation_date,
+      source: "carryover" as const,
+      units: Number(c.units),
+      gross_amount: 0,
+    })),
+  ];
 
   const supabase = createClient(context.request.headers, context.cookies);
   if (!supabase) {

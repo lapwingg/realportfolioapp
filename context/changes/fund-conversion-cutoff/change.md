@@ -3,7 +3,7 @@ change_id: fund-conversion-cutoff
 title: Apply 2024-11-07 fund conversion cutoff to PPK parser and valuation
 status: implementing
 created: 2026-06-25
-updated: 2026-06-25
+updated: 2026-06-26
 archived_at: null
 ---
 

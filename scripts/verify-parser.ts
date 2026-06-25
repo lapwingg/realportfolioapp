@@ -19,6 +19,9 @@ const parsed = parseAllianzCsv(sample);
 check(parsed.ok, true, "sample parses");
 if (!parsed.ok) throw new Error("unreachable");
 check(parsed.rows.length, 6, "sample post-filter row count");
+check(parsed.carryovers.length, 1, "sample carryovers row count");
+check(parsed.carryovers[0].valuation_date, "2024-03-05", "carryover valuation date matches FIX-004");
+check(parsed.carryovers[0].units, "30.0000", "carryover units matches FIX-004 target side");
 
 const categorised = categoriseRows(parsed.rows);
 check(categorised.length, 6, "categorised row count matches parsed");

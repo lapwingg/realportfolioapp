@@ -13,4 +13,9 @@ export interface CategorisedRow extends ParsedRow {
   source: ContributionSource;
 }
 
-export type ParseResult = { ok: true; rows: ParsedRow[] } | { ok: false; error: string };
+export interface CarryoverRow {
+  valuation_date: string;
+  units: string;
+}
+
+export type ParseResult = { ok: true; rows: ParsedRow[]; carryovers: CarryoverRow[] } | { ok: false; error: string };

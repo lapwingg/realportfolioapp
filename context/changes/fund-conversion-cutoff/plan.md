@@ -313,28 +313,28 @@ For pre-existing rows in `transactions` (Phase 2's first run against the product
 
 #### Automated
 
-- [x] 1.1 Migration applies cleanly locally: `npx supabase db reset` returns 0
-- [x] 1.2 Type-check passes: `npm run lint` is clean
-- [x] 1.3 Build passes: `npm run build` is green
+- [x] 1.1 Migration applies cleanly locally: `npx supabase db reset` returns 0 — a1c3f03
+- [x] 1.2 Type-check passes: `npm run lint` is clean — a1c3f03
+- [x] 1.3 Build passes: `npm run build` is green — a1c3f03
 
 #### Manual
 
-- [x] 1.4 Local Supabase studio shows `contribution_source` enum lists `own, employer, state, carryover`
-- [x] 1.5 `database.types.ts` diff is exactly the two-line extension and nothing else
+- [x] 1.4 Local Supabase studio shows `contribution_source` enum lists `own, employer, state, carryover` — a1c3f03
+- [x] 1.5 `database.types.ts` diff is exactly the two-line extension and nothing else — a1c3f03
 
 ### Phase 2: Parser captures Zamiana → import writes carryover row
 
 #### Automated
 
-- [ ] 2.1 `npm run verify-parser` passes with new assertions
-- [ ] 2.2 `npm run lint` is clean
-- [ ] 2.3 `npm run build` is green
+- [x] 2.1 `npm run verify-parser` passes with new assertions
+- [x] 2.2 `npm run lint` is clean
+- [x] 2.3 `npm run build` is green
 
 #### Manual
 
-- [ ] 2.4 Re-upload real CSV; `SELECT * FROM transactions WHERE source='carryover'` returns exactly one row with `transaction_date=2024-11-07`, expected units, `gross_amount=0`
-- [ ] 2.5 Second upload of same CSV is a no-op (no duplicate carryover row created)
-- [ ] 2.6 `transactions` row count = (non-Zamiana Zrealizowane) + (Zrealizowane Zamiana)
+- [x] 2.4 Re-upload real CSV; `SELECT * FROM transactions WHERE source='carryover'` returns exactly one row with `transaction_date=2024-11-07`, expected units, `gross_amount=0`
+- [x] 2.5 Second upload of same CSV is a no-op (no duplicate carryover row created)
+- [x] 2.6 `transactions` row count = (non-Zamiana Zrealizowane) + (Zrealizowane Zamiana)
 
 ### Phase 3: Valuation helper + dashboard read + Polish footnote
 

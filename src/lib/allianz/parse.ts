@@ -1,5 +1,5 @@
 import Papa from "papaparse";
-import type { ParsedRow, ParseResult } from "./types";
+import type { CarryoverRow, ParsedRow, ParseResult } from "./types";
 
 const EXPECTED_HEADERS = [
   "Data zlecenia",
@@ -52,6 +52,7 @@ export function parseAllianzCsv(csvText: string): ParseResult {
   }
 
   const rows: ParsedRow[] = [];
+  const carryovers: CarryoverRow[] = [];
   const data = parsed.data;
 
   for (let i = 0; i < data.length; i++) {
@@ -61,7 +62,25 @@ export function parseAllianzCsv(csvText: string): ParseResult {
     const orderType = (row["Typ zlecenia"] ?? "").trim();
     const status = (row["Status zlecenia"] ?? "").trim();
 
-    if (orderType === "Zamiana") continue;
+    if (orderType === "Zamiana") {
+      if (status !== "Zrealizowane") continue;
+      const carryoverDate = (row["Data wyceny"] ?? "").trim();
+      if (!ISO_DATE.test(carryoverDate)) {
+        return {
+          ok: false,
+          error: `Row ${String(rowNumber)}: invalid Data wyceny "${carryoverDate}", expected YYYY-MM-DD`,
+        };
+      }
+      const targetUnits = normaliseNumber(row["Liczba jednostek (fundusz docelowy)"]);
+      if (!targetUnits.ok) {
+        return {
+          ok: false,
+          error: `Row ${String(rowNumber)}: cannot parse "${row["Liczba jednostek (fundusz docelowy)"] ?? ""}" as a number in column "Liczba jednostek (fundusz docelowy)"`,
+        };
+      }
+      carryovers.push({ valuation_date: carryoverDate, units: targetUnits.value });
+      continue;
+    }
     if (status !== "Zrealizowane") continue;
 
     if (!ALLOWED_ORDER_TYPES.has(orderType)) {
@@ -119,5 +138,5 @@ export function parseAllianzCsv(csvText: string): ParseResult {
     });
   }
 
-  return { ok: true, rows };
+  return { ok: true, rows, carryovers };
 }
