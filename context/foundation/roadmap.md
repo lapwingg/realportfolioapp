@@ -31,8 +31,8 @@ A PPK (Pracownicze Plany Kapitałowe) account holder sees their balance displaye
 | ---- | ------------------------------- | -------------------------------------------------------------------------- | ------------- | ------------------------------------- | -------- |
 | F-01 | supabase-schema-rls             | (foundation) user-scoped tables for transactions + price snapshots with RLS | —             | Access Control, NFR (data isolation)  | done     |
 | S-01 | import-allianz-transactions     | upload Allianz file, see transactions persisted and categorised by source  | F-01          | US-01, FR-001, FR-003, FR-004, FR-005 | done     |
-| S-02 | fetch-fund-price                | fetch current fund unit price and see portfolio valuation with timestamp   | F-01          | US-01, FR-006, FR-007                 | proposed |
-| S-04 | fund-conversion-cutoff          | see a correct valuation despite the 2024-11-07 OLD→NEW fund unit conversion | S-02          | US-01, FR-007                         | preparing |
+| S-02 | fetch-fund-price                | fetch current fund unit price and see portfolio valuation with timestamp   | F-01          | US-01, FR-006, FR-007                 | done |
+| S-04 | fund-conversion-cutoff          | see a correct valuation despite the 2024-11-07 OLD→NEW fund unit conversion | S-02          | US-01, FR-007                         | done |
 | S-03 | withdrawal-scenarios-dashboard  | see after-tax amounts for all 3 withdrawal scenarios with gain/loss        | S-01, S-02, S-04 | US-01, FR-008, FR-009, FR-010, FR-011 | done |
 
 ## Baseline
@@ -89,7 +89,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Unknowns:**
   - Exact analizy.pl URL and DOM path for the relevant PPK fund unit price — Owner: user. Block: no (discovered at plan time by inspecting the live page).
 - **Risk:** analizy.pl can change its page structure silently (per FR-006 Socrates note); the fetch must show a visible error on failure and must NEVER display a stale price as current (per FR-007). Sequenced in parallel with S-01 because both depend only on F-01 and S-03 needs them together.
-- **Status:** proposed
+- **Status:** done
 
 ### S-04: Apply 2024-11-07 fund-conversion cutoff to dashboard valuation
 
@@ -103,7 +103,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
   - Cutoff source: hardcode `2024-11-07` vs. store in a small config / user-profile column — Owner: user. Block: no (decided at `/10x-plan` time; date is confirmed from CSV `Data wyceny` ground truth).
   - Carryover-units mechanism: synthetic `transactions` row with new `source` enum value vs. dashboard constant vs. an `opening_balances` side table — Owner: user. Block: no (decided at `/10x-plan` time).
 - **Risk:** The naive shape of the fix (drop pre-cutoff rows from `transactions` at the parser) would erase the lifetime own/employer/state contribution history that S-03's FR-008/009/011 calculations depend on (per `context/changes/fund-conversion-cutoff/frame.md`: "own invested capital" is a program-lifetime SUM, independent of which fund the units currently sit in). The fix MUST live in the dashboard read path, not in the storage layer; the parser stays append-only and faithful to the source CSV. Sequenced before S-03 because S-03's gain/loss math takes this valuation as input — a wrong S-04 silently corrupts every S-03 scenario number.
-- **Status:** preparing
+- **Status:** done
 
 ### S-03: Withdrawal scenarios dashboard (after-tax amounts + gain/loss)
 
@@ -148,3 +148,4 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **F-01: (foundation) Supabase schema migrations create user-scoped tables for transactions and price snapshots, with RLS policies enforcing "each authenticated user reads and writes only their own rows".** — Archived 2026-06-25 → `context/archive/2026-06-25-supabase-schema-rls/`. Lesson: —.
 - **S-01: A signed-in user can upload their Allianz statement file and see the resulting transactions persisted in their account, each categorised by contribution source (own / employer / state subsidy).** — Archived 2026-06-25 → `context/archive/2026-06-25-import-allianz-transactions/`. Lesson: —.
 - **S-03: A signed-in user with imported transactions and a fresh fetched price sees a single dashboard showing portfolio valuation, own invested capital, and the after-tax net amount + gain/loss vs own capital for all three withdrawal scenarios (immediate closure, 25% loan, 60+ retirement) — all visible simultaneously, not behind separate navigation.** — Archived 2026-06-25 → `context/archive/2026-06-25-withdrawal-scenarios-dashboard/`. Lesson: —.
+- **S-02: A signed-in user can trigger a price fetch from analizy.pl for the single PPK fund ticker and see their current portfolio valuation alongside the timestamp of the fetched price.** — Archived 2026-06-25 → `context/archive/2026-06-25-fetch-fund-price/`. Lesson: —.
