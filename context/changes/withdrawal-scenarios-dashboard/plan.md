@@ -641,7 +641,7 @@ Two small landing-experience changes. First: a one-line redirect target swap so 
 
 #### Automated
 
-- [x] 2.1 All TODO citations in `tax-constants.ts` replaced with real URLs + retrieval dates (grep returns empty)
+- [x] 2.1 All TODO citations in `tax-constants.ts` replaced with real URLs + retrieval dates (grep returns empty) — cdbd7eb
 - [x] 2.2 `npm run verify-scenarios` passes (all 8-12 assertions green) — d81c893
 - [x] 2.3 `npm run verify-valuation` still passes (regression guard) — d81c893
 - [x] 2.4 `npm run verify-parser` still passes (regression guard) — d81c893
@@ -651,8 +651,8 @@ Two small landing-experience changes. First: a one-line redirect target swap so 
 
 #### Manual
 
-- [x] 2.8 Each constant in `tax-constants.ts` cross-checked against ISAP / mojeppk.pl; URL + retrieval date documented inline
-- [x] 2.9 Verify-script's hand-calculated expectation for Case 1 matches a fresh external re-calculation
+- [x] 2.8 Each constant in `tax-constants.ts` cross-checked against ISAP / mojeppk.pl; URL + retrieval date documented inline — cdbd7eb
+- [x] 2.9 Verify-script's hand-calculated expectation for Case 1 matches a fresh external re-calculation — cdbd7eb
 
 ### Phase 3: Setup-page birth-date form + intro + Setup→Dashboard nav + save-birth-date API
 
