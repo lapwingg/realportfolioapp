@@ -9,6 +9,8 @@ const params = Astro.url.searchParams;
 const importedRaw = params.get("imported");
 const skippedRaw = params.get("skipped");
 const errorMsg = params.get("error");
+const birthSaved = params.get("birthSaved") === "1";
+const birthError = params.get("birthError");
 
 const imported = importedRaw === null ? null : Number(importedRaw);
 const skipped = skippedRaw === null ? null : Number(skippedRaw);
@@ -24,6 +26,7 @@ const counts: Record<SourceKey, { count: number; sum: number }> = {
 };
 
 let dbError: string | null = null;
+let storedBirthDate: string | null = null;
 
 if (supabase) {
   const { data, error } = await supabase.from("transactions").select("source, gross_amount");
@@ -37,6 +40,9 @@ if (supabase) {
       counts[key].sum += parseFloat(String(row.gross_amount));
     }
   }
+
+  const { data: profileRow } = await supabase.from("profiles").select("birth_date").maybeSingle();
+  storedBirthDate = profileRow?.birth_date ?? null;
 }
 
 const totalCount = counts.own.count + counts.employer.count + counts.state.count;
@@ -47,18 +53,30 @@ const fmt = new Intl.NumberFormat("pl-PL", {
 });
 
 const rows: { key: SourceKey; label: string }[] = [
-  { key: "own", label: "own" },
-  { key: "employer", label: "employer" },
-  { key: "state", label: "state" },
+  { key: "own", label: "własne" },
+  { key: "employer", label: "pracodawca" },
+  { key: "state", label: "państwo" },
 ];
+
+const todayMax = new Date().toISOString().slice(0, 10);
 ---
 
-<Layout title="Setup">
+<Layout title="Konfiguracja">
   <div class="bg-cosmic flex min-h-screen items-start justify-center p-4 pt-12">
     <div class="w-full max-w-xl rounded-2xl border border-white/10 bg-white/10 p-8 text-white backdrop-blur-xl">
-      <h1 class="mb-6 bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-2xl font-bold text-transparent">
-        Setup
-      </h1>
+      <div class="mb-6 flex items-baseline justify-between gap-4">
+        <h1 class="bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-2xl font-bold text-transparent">
+          Konfiguracja
+        </h1>
+        <a href="/dashboard" class="text-xs text-blue-100/70 hover:text-blue-100 hover:underline"> → Dashboard </a>
+      </div>
+
+      <section class="mb-6 text-sm text-blue-100/80">
+        <p>
+          Setup pozwala zaimportować historię transakcji z Allianz oraz zapisać Twoją datę urodzenia. Te dane są
+          potrzebne, aby Dashboard pokazał Ci dokładne kwoty wypłat netto po podatku dla wszystkich scenariuszy.
+        </p>
+      </section>
 
       {
         errorMsg && (
@@ -69,9 +87,33 @@ const rows: { key: SourceKey; label: string }[] = [
       }
 
       {
+        birthError && (
+          <div class="mb-4 rounded-lg border border-red-400/40 bg-red-500/10 px-4 py-3 text-sm text-red-100">
+            Nie zapisano: {birthError}
+          </div>
+        )
+      }
+
+      {
+        birthSaved && (
+          <div class="mb-4 rounded-lg border border-green-400/40 bg-green-500/10 px-4 py-3 text-sm text-green-100">
+            Zapisano datę urodzenia.
+          </div>
+        )
+      }
+
+      {
         showSuccess && (
           <div class="mb-4 rounded-lg border border-green-400/40 bg-green-500/10 px-4 py-3 text-sm text-green-100">
-            Imported {imported} new, {skipped ?? 0} already present.
+            <p>
+              Zaimportowano {imported} nowych, {skipped ?? 0} już istniało.
+            </p>
+            <a
+              href="/dashboard"
+              class="mt-2 inline-block rounded-lg border border-green-400/40 bg-green-500/20 px-4 py-2 text-sm hover:bg-green-500/30"
+            >
+              Przejdź do Dashboard →
+            </a>
           </div>
         )
       }
@@ -79,20 +121,20 @@ const rows: { key: SourceKey; label: string }[] = [
       {
         dbError && (
           <div class="mb-4 rounded-lg border border-amber-400/40 bg-amber-500/10 px-4 py-3 text-sm text-amber-100">
-            Could not read existing transactions: {dbError}
+            Nie udało się odczytać transakcji: {dbError}
           </div>
         )
       }
 
       <section class="mb-6">
-        <h2 class="mb-3 text-sm font-semibold text-blue-100/80">Your contributions so far</h2>
+        <h2 class="mb-3 text-sm font-semibold text-blue-100/80">Twoje wpłaty</h2>
         <table class="w-full text-sm">
           <tbody>
             {
               rows.map(({ key, label }) => (
                 <tr class="border-b border-white/5">
                   <td class="py-2 pr-4 text-blue-100/80">{label}</td>
-                  <td class="py-2 pr-4 text-right tabular-nums">{counts[key].count} rows</td>
+                  <td class="py-2 pr-4 text-right tabular-nums">{counts[key].count} pozycji</td>
                   <td class="py-2 text-right tabular-nums">{fmt.format(counts[key].sum)} zł</td>
                 </tr>
               ))
@@ -101,8 +143,36 @@ const rows: { key: SourceKey; label: string }[] = [
         </table>
       </section>
 
+      <section id="birth-date" class="mb-6">
+        <h2 class="mb-2 text-sm font-semibold text-blue-100/80">Data urodzenia</h2>
+        <p class="mb-3 text-xs text-blue-100/60">
+          Potrzebna do obliczania dat dostępności wypłat (60+, pożyczka mieszkaniowa).
+        </p>
+        <form method="POST" action="/api/profile/save-birth-date" class="flex items-end gap-3">
+          <label class="flex-1" for="birth-date-input">
+            <span class="sr-only">Data urodzenia</span>
+            <input
+              type="date"
+              id="birth-date-input"
+              name="birth_date"
+              value={storedBirthDate ?? ""}
+              required
+              min="1900-01-01"
+              max={todayMax}
+              class="w-full rounded-lg border border-white/15 bg-white/5 px-3 py-2 text-sm text-white tabular-nums focus:border-blue-300/50 focus:outline-none"
+            />
+          </label>
+          <button
+            type="submit"
+            class="rounded-lg border border-blue-400/40 bg-blue-500/20 px-4 py-2 text-sm hover:bg-blue-500/30"
+          >
+            Zapisz
+          </button>
+        </form>
+      </section>
+
       <section>
-        {totalCount > 0 && <p class="mb-3 text-sm text-blue-100/60">Upload an updated statement →</p>}
+        {totalCount > 0 && <p class="mb-3 text-sm text-blue-100/60">Zaktualizuj plik transakcji →</p>}
         <UploadForm client:load />
       </section>
     </div>

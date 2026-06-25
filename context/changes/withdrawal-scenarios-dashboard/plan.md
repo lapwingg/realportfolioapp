@@ -642,12 +642,12 @@ Two small landing-experience changes. First: a one-line redirect target swap so 
 #### Automated
 
 - [ ] 2.1 All TODO citations in `tax-constants.ts` replaced with real URLs + retrieval dates (grep returns empty)
-- [x] 2.2 `npm run verify-scenarios` passes (all 8-12 assertions green)
-- [x] 2.3 `npm run verify-valuation` still passes (regression guard)
-- [x] 2.4 `npm run verify-parser` still passes (regression guard)
-- [x] 2.5 `npm run verify-price-parser` still passes (regression guard)
-- [x] 2.6 `npm run lint` is clean
-- [x] 2.7 `npm run build` is green
+- [x] 2.2 `npm run verify-scenarios` passes (all 8-12 assertions green) — d81c893
+- [x] 2.3 `npm run verify-valuation` still passes (regression guard) — d81c893
+- [x] 2.4 `npm run verify-parser` still passes (regression guard) — d81c893
+- [x] 2.5 `npm run verify-price-parser` still passes (regression guard) — d81c893
+- [x] 2.6 `npm run lint` is clean — d81c893
+- [x] 2.7 `npm run build` is green — d81c893
 
 #### Manual
 
@@ -658,8 +658,8 @@ Two small landing-experience changes. First: a one-line redirect target swap so 
 
 #### Automated
 
-- [ ] 3.1 `npm run lint` is clean
-- [ ] 3.2 `npm run build` is green
+- [x] 3.1 `npm run lint` is clean
+- [x] 3.2 `npm run build` is green
 - [ ] 3.3 Signed-out POST to `/api/profile/save-birth-date` returns 302/303 to `/auth/signin`
 
 #### Manual
