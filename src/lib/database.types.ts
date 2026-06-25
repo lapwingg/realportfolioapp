@@ -84,7 +84,7 @@ export interface Database {
     Views: Record<never, never>;
     Functions: Record<never, never>;
     Enums: {
-      contribution_source: "own" | "employer" | "state";
+      contribution_source: "own" | "employer" | "state" | "carryover";
     };
     CompositeTypes: Record<never, never>;
   };
@@ -205,7 +205,7 @@ export const Constants = {
   },
   public: {
     Enums: {
-      contribution_source: ["own", "employer", "state"],
+      contribution_source: ["own", "employer", "state", "carryover"],
     },
   },
 } as const;
