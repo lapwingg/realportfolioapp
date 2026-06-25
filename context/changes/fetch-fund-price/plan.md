@@ -399,23 +399,23 @@ No schema migration. The reused `price_snapshots` table is empty in production (
 
 #### Automated
 
-- [x] 1.1 `npm run verify-price-parser` exits 0 against the committed fixture
-- [x] 1.2 `npm run lint` passes
-- [x] 1.3 `npm run build` passes
+- [x] 1.1 `npm run verify-price-parser` exits 0 against the committed fixture — 0291ba8
+- [x] 1.2 `npm run lint` passes — 0291ba8
+- [x] 1.3 `npm run build` passes — 0291ba8
 
 #### Manual
 
-- [x] 1.4 `tests/fixtures/analizy-sample.html` exists, captured from the real URL via documented `curl`, with `EXPECTED_PRICE` + capture-date comment
-- [x] 1.5 Deliberate fixture corruption makes `npm run verify-price-parser` fail with the expected error
-- [x] 1.6 `parsePriceText('12,3456')` from a tsx REPL returns `{ ok: true, price: 12.3456, priceText: '12,3456' }`
+- [x] 1.4 `tests/fixtures/analizy-sample.html` exists, captured from the real URL via documented `curl`, with `EXPECTED_PRICE` + capture-date comment — 0291ba8
+- [x] 1.5 Deliberate fixture corruption makes `npm run verify-price-parser` fail with the expected error — 0291ba8
+- [x] 1.6 `parsePriceText('12,3456')` from a tsx REPL returns `{ ok: true, price: 12.3456, priceText: '12,3456' }` — 0291ba8
 
 ### Phase 2: `/api/prices/fetch` API route + middleware gate + dedup write
 
 #### Automated
 
-- [ ] 2.1 `npm run lint` passes
-- [ ] 2.2 `npm run build` passes
-- [ ] 2.3 Signed-out POST to `/api/prices/fetch` returns 302/303 to `/auth/signin`
+- [x] 2.1 `npm run lint` passes
+- [x] 2.2 `npm run build` passes
+- [x] 2.3 Signed-out POST to `/api/prices/fetch` returns 302/303 to `/auth/signin`
 
 #### Manual
 
