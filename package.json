@@ -12,7 +12,8 @@
     "format": "prettier --write .",
     "deploy": "astro build && wrangler deploy",
     "verify-parser": "tsx scripts/verify-parser.ts",
-    "verify-price-parser": "tsx scripts/verify-price-parser.ts"
+    "verify-price-parser": "tsx scripts/verify-price-parser.ts",
+    "verify-valuation": "tsx scripts/verify-valuation.ts"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.8",

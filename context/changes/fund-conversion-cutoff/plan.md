@@ -326,30 +326,30 @@ For pre-existing rows in `transactions` (Phase 2's first run against the product
 
 #### Automated
 
-- [x] 2.1 `npm run verify-parser` passes with new assertions
-- [x] 2.2 `npm run lint` is clean
-- [x] 2.3 `npm run build` is green
+- [x] 2.1 `npm run verify-parser` passes with new assertions — 470ccfa
+- [x] 2.2 `npm run lint` is clean — 470ccfa
+- [x] 2.3 `npm run build` is green — 470ccfa
 
 #### Manual
 
-- [x] 2.4 Re-upload real CSV; `SELECT * FROM transactions WHERE source='carryover'` returns exactly one row with `transaction_date=2024-11-07`, expected units, `gross_amount=0`
-- [x] 2.5 Second upload of same CSV is a no-op (no duplicate carryover row created)
-- [x] 2.6 `transactions` row count = (non-Zamiana Zrealizowane) + (Zrealizowane Zamiana)
+- [x] 2.4 Re-upload real CSV; `SELECT * FROM transactions WHERE source='carryover'` returns exactly one row with `transaction_date=2024-11-07`, expected units, `gross_amount=0` — 470ccfa
+- [x] 2.5 Second upload of same CSV is a no-op (no duplicate carryover row created) — 470ccfa
+- [x] 2.6 `transactions` row count = (non-Zamiana Zrealizowane) + (Zrealizowane Zamiana) — 470ccfa
 
 ### Phase 3: Valuation helper + dashboard read + Polish footnote
 
 #### Automated
 
-- [ ] 3.1 `npm run verify-valuation` passes (all helper-scenario assertions green)
-- [ ] 3.2 `npm run verify-parser` still passes (Phase 2 regression guard)
-- [ ] 3.3 `npm run lint` is clean
-- [ ] 3.4 `npm run build` is green
+- [x] 3.1 `npm run verify-valuation` passes (all helper-scenario assertions green)
+- [x] 3.2 `npm run verify-parser` still passes (Phase 2 regression guard)
+- [x] 3.3 `npm run lint` is clean
+- [x] 3.4 `npm run build` is green
 
 #### Manual
 
-- [ ] 3.5 `/dashboard` valuation matches user's known correct portfolio value (materially smaller than pre-fix wrong number)
-- [ ] 3.6 Polish footnote `Wycena uwzględnia jednostki od konwersji z dnia DD.MM.YYYY` renders under the "Pobrano" line
-- [ ] 3.7 "Pobierz cenę" reload preserves the footnote and updates valuation
-- [ ] 3.8 Fresh user with no transactions: existing "no_transactions" state still shows (no regression)
-- [ ] 3.9 (If available) User with transactions but no Zamiana: dashboard shows valuation with NO footnote (fallback path)
-- [ ] 3.10 README "Pobieranie cen" reads cleanly end-to-end with the new paragraph
+- [x] 3.5 `/dashboard` valuation matches user's known correct portfolio value (materially smaller than pre-fix wrong number)
+- [x] 3.6 Polish footnote `Wycena uwzględnia jednostki od konwersji z dnia DD.MM.YYYY` renders under the "Pobrano" line
+- [x] 3.7 "Pobierz cenę" reload preserves the footnote and updates valuation
+- [x] 3.8 Fresh user with no transactions: existing "no_transactions" state still shows (no regression)
+- [x] 3.9 (If available) User with transactions but no Zamiana: dashboard shows valuation with NO footnote (fallback path)
+- [x] 3.10 README "Pobieranie cen" reads cleanly end-to-end with the new paragraph

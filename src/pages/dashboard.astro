@@ -2,6 +2,7 @@
 import Layout from "@/layouts/Layout.astro";
 import { createClient } from "@/lib/supabase";
 import { TICKER, FUND_LABEL } from "@/lib/analizy/types";
+import { computeValuation } from "@/lib/valuation/compute";
 
 export const prerender = false;
 
@@ -15,15 +16,18 @@ const priceError = params.get("priceError");
 const supabase = createClient(Astro.request.headers, Astro.cookies);
 
 let unitsSum = 0;
+let cutoffDate: string | null = null;
 let latest: { price: number | string; fetched_at: string } | null = null;
 const dbErrors: string[] = [];
 
 if (supabase) {
-  const txResult = await supabase.from("transactions").select("units");
+  const txResult = await supabase.from("transactions").select("transaction_date, source, units");
   if (txResult.error) {
     dbErrors.push(txResult.error.message);
   } else {
-    unitsSum = txResult.data.reduce((acc, row) => acc + parseFloat(String(row.units)), 0);
+    const valuation = computeValuation(txResult.data);
+    unitsSum = valuation.unitsSum;
+    cutoffDate = valuation.cutoffDate;
   }
 
   const snResult = await supabase
@@ -87,6 +91,7 @@ function relativeTimePl(fetchedAt: Date): string {
 
 const relTime = fetchedAtDate !== null ? relativeTimePl(fetchedAtDate) : null;
 const absTime = fetchedAtDate !== null ? fetchedAtDate.toLocaleString("pl-PL") : null;
+const cutoffDisplay = cutoffDate !== null ? new Date(cutoffDate).toLocaleDateString("pl-PL") : null;
 ---
 
 <Layout title="Dashboard">
@@ -157,6 +162,11 @@ const absTime = fetchedAtDate !== null ? fetchedAtDate.toLocaleString("pl-PL") :
                 <span class="ml-2 text-blue-100/40">· Cena bez zmian od ostatniego pobrania.</span>
               )}
             </p>
+            {cutoffDisplay !== null && (
+              <p class="mt-1 text-xs text-blue-100/50">
+                Wycena uwzględnia jednostki od konwersji z dnia {cutoffDisplay}.
+              </p>
+            )}
           </section>
         )
       }
