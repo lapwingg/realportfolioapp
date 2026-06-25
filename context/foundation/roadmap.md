@@ -3,7 +3,7 @@ project: "Real Value Portfolio App"
 version: 1
 status: draft
 created: 2026-06-24
-updated: 2026-06-24
+updated: 2026-06-25
 prd_version: 1
 main_goal: speed
 top_blocker: time
@@ -29,7 +29,7 @@ A PPK (Pracownicze Plany Kapitałowe) account holder sees their balance displaye
 
 | ID   | Change ID                       | Outcome (user can …)                                                       | Prerequisites | PRD refs                              | Status   |
 | ---- | ------------------------------- | -------------------------------------------------------------------------- | ------------- | ------------------------------------- | -------- |
-| F-01 | supabase-schema-rls             | (foundation) user-scoped tables for transactions + price snapshots with RLS | —             | Access Control, NFR (data isolation)  | ready    |
+| F-01 | supabase-schema-rls             | (foundation) user-scoped tables for transactions + price snapshots with RLS | —             | Access Control, NFR (data isolation)  | done     |
 | S-01 | import-allianz-transactions     | upload Allianz file, see transactions persisted and categorised by source  | F-01          | US-01, FR-001, FR-003, FR-004, FR-005 | proposed |
 | S-02 | fetch-fund-price                | fetch current fund unit price and see portfolio valuation with timestamp   | F-01          | US-01, FR-006, FR-007                 | proposed |
 | S-03 | withdrawal-scenarios-dashboard  | see after-tax amounts for all 3 withdrawal scenarios with gain/loss        | S-01, S-02    | US-01, FR-008, FR-009, FR-010, FR-011 | proposed |
@@ -59,7 +59,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** RLS misconfiguration would silently leak data across accounts — directly violates the NFR that is non-negotiable. Sequenced first because no domain slice can be safely planned or verified until the data-isolation contract exists in the schema.
-- **Status:** ready
+- **Status:** done
 
 ## Slices
 
@@ -128,3 +128,5 @@ Foundations below assume these are present and do NOT re-scaffold them.
 ## Done
 
 (Empty. `/10x-archive` will flip an item's `Status` to `done` and append an entry here when a change whose `Change ID` matches a roadmap item is archived. Do not pre-populate.)
+
+- **F-01: (foundation) Supabase schema migrations create user-scoped tables for transactions and price snapshots, with RLS policies enforcing "each authenticated user reads and writes only their own rows".** — Archived 2026-06-25 → `context/archive/2026-06-25-supabase-schema-rls/`. Lesson: —.
