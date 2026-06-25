@@ -346,33 +346,33 @@ Wire the E2E suite into `.github/workflows/ci.yml` so the two risk specs run on 
 
 #### Automated
 
-- [x] 1.1 `npm run build` succeeds
-- [x] 1.2 `npx playwright test --list` enumerates `seed.spec.ts` against wrangler webServer without startup error
-- [x] 1.3 `npm run test:integration` passes after marker + helper refactor
-- [x] 1.4 `npm run lint` passes
-- [x] 1.5 `npm run test` (Vitest unit project) passes
+- [x] 1.1 `npm run build` succeeds — 51ce61e
+- [x] 1.2 `npx playwright test --list` enumerates `seed.spec.ts` against wrangler webServer without startup error — 51ce61e
+- [x] 1.3 `npm run test:integration` passes after marker + helper refactor — 51ce61e
+- [x] 1.4 `npm run lint` passes — 51ce61e
+- [x] 1.5 `npm run test` (Vitest unit project) passes — 51ce61e
 
 #### Manual
 
-- [x] 1.6 `npx playwright test seed.spec.ts` completes against `wrangler dev` and exits 0
-- [x] 1.7 `.env.example` lists all 5 E2E env vars with descriptions
-- [x] 1.8 `tests/integration/risk-01-rls-route-leak.test.ts` imports markers from shared module
+- [x] 1.6 `npx playwright test seed.spec.ts` completes against `wrangler dev` and exits 0 — 51ce61e
+- [x] 1.7 `.env.example` lists all 5 E2E env vars with descriptions — 51ce61e
+- [x] 1.8 `tests/integration/risk-01-rls-route-leak.test.ts` imports markers from shared module — 51ce61e
 
 ### Phase 2: Risk #1 spec — cross-account dashboard isolation
 
 #### Automated
 
-- [ ] 2.1 `npm run test:e2e -- risk-01-cross-account.spec.ts` exits 0
-- [ ] 2.2 `npm run lint` passes
-- [ ] 2.3 No `page.waitForTimeout()` in the spec (grep guard)
-- [ ] 2.4 Only `getByText` / `getByRole` locators in the spec (no CSS/XPath)
-- [ ] 2.5 `tests/e2e/risk-01-cross-account.spec.ts` exists
+- [x] 2.1 `npm run test:e2e -- risk-01-cross-account.spec.ts` exits 0
+- [x] 2.2 `npm run lint` passes
+- [x] 2.3 No `page.waitForTimeout()` in the spec (grep guard)
+- [x] 2.4 Only `getByText` / `getByRole` locators in the spec (no CSS/XPath)
+- [x] 2.5 `tests/e2e/risk-01-cross-account.spec.ts` exists
 
 #### Manual
 
-- [ ] 2.6 RLS-policy-flip mutation drill: spec fails on price-prompt-absent assertion
-- [ ] 2.7 Integration test still passes after policy revert
-- [ ] 2.8 Ephemeral B users deleted after the test (auth.users count stable across 3 runs)
+- [x] 2.6 RLS-policy-flip mutation drill: spec fails on price-prompt-absent assertion
+- [x] 2.7 Integration test still passes after policy revert
+- [x] 2.8 Ephemeral B users deleted after the test (auth.users count stable across 3 runs)
 
 ### Phase 3: Risk #4 spec — cross-cutoff dashboard valuation
 
