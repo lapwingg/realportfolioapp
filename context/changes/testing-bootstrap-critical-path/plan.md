@@ -452,29 +452,29 @@ Fill in the §6.1 and §6.2 placeholders in `context/foundation/test-plan.md` wi
 
 #### Automated
 
-- [x] 1.1 `npm test` exits 0 and reports 1 passing test from `src/lib/utils.test.ts`
-- [x] 1.2 `npm run test:integration` exits 0 with "0 tests"
-- [x] 1.3 `npm run lint` still exits 0
-- [x] 1.4 `npm run build` still exits 0
-- [x] 1.5 `package-lock.json` has no `resolved` URLs outside `registry.npmjs.org`
+- [x] 1.1 `npm test` exits 0 and reports 1 passing test from `src/lib/utils.test.ts` — c02c4d4
+- [x] 1.2 `npm run test:integration` exits 0 with "0 tests" — c02c4d4
+- [x] 1.3 `npm run lint` still exits 0 — c02c4d4
+- [x] 1.4 `npm run build` still exits 0 — c02c4d4
+- [x] 1.5 `package-lock.json` has no `resolved` URLs outside `registry.npmjs.org` — c02c4d4
 
 #### Manual
 
-- [x] 1.6 `npx vitest --project unit` watch mode re-runs in <1s on edit
+- [x] 1.6 `npx vitest --project unit` watch mode re-runs in <1s on edit — c02c4d4
 
 ### Phase 2: Integration harness
 
 #### Automated
 
-- [ ] 2.1 `npm run test:integration` exits 0 with 2 passing tests from `tests/integration/_smoke/dashboard-auth.test.ts`
-- [ ] 2.2 `supabase status` reports `running` after the test run
-- [ ] 2.3 `npm test` still exits 0
-- [ ] 2.4 `npm run lint` still exits 0
+- [x] 2.1 `npm run test:integration` exits 0 with 2 passing tests from `tests/integration/_smoke/dashboard-auth.test.ts`
+- [x] 2.2 `supabase status` reports `running` after the test run
+- [x] 2.3 `npm test` still exits 0
+- [x] 2.4 `npm run lint` still exits 0
 
 #### Manual
 
-- [ ] 2.5 Warm `npm run test:integration` completes in <15s
-- [ ] 2.6 Cold-start path (after `supabase stop`) boots the stack via global setup
+- [x] 2.5 Warm `npm run test:integration` completes in <15s
+- [x] 2.6 Cold-start path (after `supabase stop`) boots the stack via global setup
 
 ### Phase 3: Risk-defending integration tests
 
