@@ -2,6 +2,7 @@
 import Layout from "@/layouts/Layout.astro";
 import UploadForm from "@/components/setup/UploadForm";
 import { createClient } from "@/lib/supabase";
+import { Icon } from "astro-icon/components";
 
 export const prerender = false;
 
@@ -68,7 +69,13 @@ const todayMax = new Date().toISOString().slice(0, 10);
         <h1 class="bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-2xl font-bold text-transparent">
           Konfiguracja
         </h1>
-        <a href="/dashboard" class="text-xs text-blue-100/70 hover:text-blue-100 hover:underline"> → Dashboard </a>
+        <a
+          href="/dashboard"
+          class="inline-flex items-center gap-1 text-xs text-blue-100/70 hover:text-blue-100 hover:underline"
+        >
+          <Icon name="lucide:home" class="h-3.5 w-3.5" />
+          Dashboard
+        </a>
       </div>
 
       <section class="mb-6 text-sm text-blue-100/80">
@@ -110,9 +117,10 @@ const todayMax = new Date().toISOString().slice(0, 10);
             </p>
             <a
               href="/dashboard"
-              class="mt-2 inline-block rounded-lg border border-green-400/40 bg-green-500/20 px-4 py-2 text-sm hover:bg-green-500/30"
+              class="mt-2 inline-flex items-center gap-1.5 rounded-lg border border-green-400/40 bg-green-500/20 px-4 py-2 text-sm hover:bg-green-500/30"
             >
-              Przejdź do Dashboard →
+              Przejdź do Dashboard
+              <Icon name="lucide:arrow-right" class="h-4 w-4" />
             </a>
           </div>
         )
@@ -127,7 +135,10 @@ const todayMax = new Date().toISOString().slice(0, 10);
       }
 
       <section class="mb-6">
-        <h2 class="mb-3 text-sm font-semibold text-blue-100/80">Twoje wpłaty</h2>
+        <h2 class="mb-3 flex items-center gap-2 text-sm font-semibold text-blue-100/80">
+          <Icon name="lucide:piggy-bank" class="h-4 w-4" />
+          Twoje wpłaty
+        </h2>
         <table class="w-full text-sm">
           <tbody>
             {
@@ -144,7 +155,10 @@ const todayMax = new Date().toISOString().slice(0, 10);
       </section>
 
       <section id="birth-date" class="mb-6">
-        <h2 class="mb-2 text-sm font-semibold text-blue-100/80">Data urodzenia</h2>
+        <h2 class="mb-2 flex items-center gap-2 text-sm font-semibold text-blue-100/80">
+          <Icon name="lucide:calendar" class="h-4 w-4" />
+          Data urodzenia
+        </h2>
         <p class="mb-3 text-xs text-blue-100/60">
           Potrzebna do obliczania dat dostępności wypłat (60+, pożyczka mieszkaniowa).
         </p>
@@ -164,8 +178,9 @@ const todayMax = new Date().toISOString().slice(0, 10);
           </label>
           <button
             type="submit"
-            class="rounded-lg border border-blue-400/40 bg-blue-500/20 px-4 py-2 text-sm hover:bg-blue-500/30"
+            class="inline-flex items-center gap-1.5 rounded-lg border border-blue-400/40 bg-blue-500/20 px-4 py-2 text-sm hover:bg-blue-500/30"
           >
+            <Icon name="lucide:save" class="h-4 w-4" />
             Zapisz
           </button>
         </form>

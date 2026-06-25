@@ -434,10 +434,10 @@ Brak Chromatic/Percy w projekcie. Visual diff manualny przed/po każdej fazie �
 
 #### Automated
 
-- [x] 3.1 `npm run verify-scenarios` still passes (regression guard)
-- [x] 3.2 `npm run verify-valuation` still passes (regression guard)
-- [x] 3.3 `npm run lint` clean
-- [x] 3.4 `npm run build` green
+- [x] 3.1 `npm run verify-scenarios` still passes (regression guard) — 82010c0
+- [x] 3.2 `npm run verify-valuation` still passes (regression guard) — 82010c0
+- [x] 3.3 `npm run lint` clean — 82010c0
+- [x] 3.4 `npm run build` green — 82010c0
 
 #### Manual
 
@@ -455,9 +455,9 @@ Brak Chromatic/Percy w projekcie. Visual diff manualny przed/po każdej fazie �
 
 #### Automated
 
-- [ ] 4.1 `npm run lint` clean
-- [ ] 4.2 `npm run build` green
-- [ ] 4.3 `grep -n "lucide:" src/pages/dashboard.astro src/pages/setup.astro` matches w obu plikach
+- [x] 4.1 `npm run lint` clean
+- [x] 4.2 `npm run build` green
+- [x] 4.3 `grep -n "lucide:" src/pages/dashboard.astro src/pages/setup.astro` matches w obu plikach
 
 #### Manual
 
