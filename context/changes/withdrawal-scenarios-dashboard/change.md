@@ -1,7 +1,7 @@
 ---
 change_id: withdrawal-scenarios-dashboard
 title: After-tax withdrawal scenarios dashboard (4 scenarios + birth-date timing + explanations)
-status: planned
+status: implementing
 created: 2026-06-25
 updated: 2026-06-25
 archived_at: null

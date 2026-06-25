@@ -701,10 +701,10 @@ Two small landing-experience changes. First: a one-line redirect target swap so 
 
 #### Automated
 
-- [x] 5.1 `npm run lint` is clean
-- [x] 5.2 `npm run build` is green
-- [x] 5.3 `grep -n "redirect(\"/\")" src/pages/api/auth/signin.ts` returns no matches (signin redirect change landed)
-- [x] 5.4 `grep -n "AppIntro" src/pages/auth/signin.astro src/pages/auth/signup.astro` returns matches in both files
+- [x] 5.1 `npm run lint` is clean — 361163e
+- [x] 5.2 `npm run build` is green — 361163e
+- [x] 5.3 `grep -n "redirect(\"/\")" src/pages/api/auth/signin.ts` returns no matches (signin redirect change landed) — 361163e
+- [x] 5.4 `grep -n "AppIntro" src/pages/auth/signin.astro src/pages/auth/signup.astro` returns matches in both files — 361163e
 
 #### Manual
 
