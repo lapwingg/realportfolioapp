@@ -11,7 +11,8 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "deploy": "astro build && wrangler deploy",
-    "verify-parser": "tsx scripts/verify-parser.ts"
+    "verify-parser": "tsx scripts/verify-parser.ts",
+    "verify-price-parser": "tsx scripts/verify-price-parser.ts"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.8",
@@ -29,6 +30,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^1.14.0",
+    "node-html-parser": "^8.0.3",
     "papaparse": "^5.5.4",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
