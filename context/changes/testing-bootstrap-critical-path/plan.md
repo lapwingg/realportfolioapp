@@ -494,25 +494,25 @@ Fill in the §6.1 and §6.2 placeholders in `context/foundation/test-plan.md` wi
 
 #### Automated
 
-- [x] 4.1 PR to `master` shows green `lint → build → supabase start → npm test → npm run test:integration → supabase test db`
-- [x] 4.2 Deliberately weakened RLS policy turns `supabase test db` red on PR
-- [x] 4.3 Deliberately removed `onConflict` turns `npm run test:integration` red on PR
-- [x] 4.4 `deploy` job only runs on push to `master` after `ci` is green
-- [x] 4.5 Total CI wall-clock under 5 minutes on cold runner
+- [x] 4.1 PR to `master` shows green `lint → build → supabase start → npm test → npm run test:integration → supabase test db` — b006e4f
+- [x] 4.2 Deliberately weakened RLS policy turns `supabase test db` red on PR — b006e4f
+- [x] 4.3 Deliberately removed `onConflict` turns `npm run test:integration` red on PR — b006e4f
+- [x] 4.4 `deploy` job only runs on push to `master` after `ci` is green — b006e4f
+- [x] 4.5 Total CI wall-clock under 5 minutes on cold runner — b006e4f
 
 #### Manual
 
-- [x] 4.6 GitHub branch protection picks up new required checks (or documented as blocking by convention if not configured)
-- [x] 4.7 Supabase logs are accessible in runner output when a test fails
+- [x] 4.6 GitHub branch protection picks up new required checks (or documented as blocking by convention if not configured) — b006e4f
+- [x] 4.7 Supabase logs are accessible in runner output when a test fails — b006e4f
 
 ### Phase 5: Update test-plan cookbook + close Phase 1 row
 
 #### Automated
 
-- [ ] 5.1 `grep "TBD — see §3 Phase 1" context/foundation/test-plan.md` returns zero matches
-- [ ] 5.2 §3 Phase 1 row marked `complete` in `test-plan.md`
+- [x] 5.1 `grep "TBD — see §3 Phase 1" context/foundation/test-plan.md` returns zero matches
+- [x] 5.2 §3 Phase 1 row marked `complete` in `test-plan.md`
 
 #### Manual
 
-- [ ] 5.3 Cold-context reader can add a unit test and an integration test from §6.1 + §6.2 alone
-- [ ] 5.4 `/10x-test-plan` (no args) advances to Phase 2 on next invocation
+- [x] 5.3 Cold-context reader can add a unit test and an integration test from §6.1 + §6.2 alone
+- [x] 5.4 `/10x-test-plan` (no args) advances to Phase 2 on next invocation

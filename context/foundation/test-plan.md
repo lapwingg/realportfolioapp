@@ -6,7 +6,7 @@
 >
 > Refresh: re-run `/10x-test-plan --refresh` when stale (see §8).
 >
-> Last updated: 2026-06-25 (Phase 1 → `change opened`)
+> Last updated: 2026-06-25 (Phase 1 → `complete`)
 
 ## 1. Strategy
 
@@ -78,7 +78,7 @@ orchestrator updates Status as artifacts appear on disk.
 
 | # | Phase name | Goal (one line) | Risks covered | Test types | Status | Change folder |
 |---|---|---|---|---|---|---|
-| 1 | Bootstrap test runner + data-isolation critical path | Install Vitest, wire it into CI, then defend RLS leak / dedupe / IDOR at the cheapest layer | #1, #3, #7 | unit + integration | change opened | `context/changes/testing-bootstrap-critical-path/` |
+| 1 | Bootstrap test runner + data-isolation critical path | Install Vitest, wire it into CI, then defend RLS leak / dedupe / IDOR at the cheapest layer | #1, #3, #7 | unit + integration | complete | `context/changes/testing-bootstrap-critical-path/` |
 | 2 | Tax-math hardening with external oracles | Lock the three withdrawal-scenario amounts and the cross-cutoff valuation against hand-computed worked examples (no oracles lifted from the implementation) | #2, #4 | unit (table-driven) | not started | — |
 | 3 | External-edge contract guards (scraper + CPU budget) | Lock analizy.pl extraction against a saved HTML fixture + nightly shape probe; enforce the scenarios hot-loop CPU budget under `wrangler --remote` with a realistic synthetic history | #5, #6 | unit + perf check under `wrangler --remote` | not started | — |
 | 4 | Quality-gates wiring + optional happy-path e2e | Require unit + integration in CI; optionally add a single Playwright smoke for sign-in → upload → dashboard renders all three scenarios | cross-cutting | gates + optional e2e | not started | — |
@@ -92,7 +92,7 @@ The classic test base for this project. AI-native tools (if any) carry a
 
 | Layer | Tool | Version | Notes |
 |---|---|---|---|
-| unit + integration | Vitest (recommended) | TBD | none yet — see §3 Phase 1; first-party Vite integration matches the Astro+React+Vite toolchain; required after §3 Phase 1 |
+| unit + integration | Vitest | ^4.1.9 | first-party Vite integration matches the Astro+React+Vite toolchain; required after §3 Phase 1 (now `complete`) |
 | API mocking (HTTP edge) | MSW (recommended) | TBD | none yet — see §3 Phase 3; needed for analizy.pl fetch in unit tests; only mock at the HTTP edge, never internal modules |
 | Integration / DB | Supabase local stack (`supabase start`) | already vendored via `supabase` devDep | run against a real RLS-enabled test schema; never mock the Supabase client itself when the test purpose is RLS |
 | e2e | Playwright (optional) | TBD | none yet — see §3 Phase 4; include only if cost × signal holds for a solo-after-hours MVP |
@@ -133,11 +133,28 @@ the relevant rollout phase ships; before that, it reads "TBD — see §3 Phase
 
 ### 6.1 Adding a unit test
 
-- TBD — see §3 Phase 1 (Vitest config, file convention, run command, reference test for a pure function in `src/lib/`).
+- **Location**: co-located with the source — `<module>.test.ts` next to `<module>.ts` under `src/`.
+- **Naming**: `<module>.test.ts`. Vitest's `unit` project glob is `src/**/*.test.ts`.
+- **Runner**: `npm test` (all unit tests). Single file: `npx vitest run --project unit src/<path>/<module>.test.ts`. Watch: `npx vitest --project unit`.
+- **Reference test**: `src/lib/utils.test.ts` (one `describe` / one `it`, no setup files).
+- **Boundary**: the `unit` project has no globalSetup and no Supabase. Anything that needs the local stack or HTTP belongs to §6.2.
 
 ### 6.2 Adding an integration test (Supabase RLS, real route)
 
-- TBD — see §3 Phase 1 (local Supabase test schema setup, reference RLS leak test, dedupe test, IDOR/forged-payload test).
+- **Location**: `tests/integration/<topic>.test.ts`. Helpers live under `tests/integration/_helpers/`.
+- **Prerequisites**:
+  - Local Supabase stack — `npx supabase start`. `globalSetup` auto-starts if stopped; CI does it in `.github/workflows/ci.yml`.
+  - Migrations current — run `npx supabase db reset` after pulling a migration that adds enum values or changes columns. The harness does NOT reset between runs.
+  - Build present — `globalSetup` runs `npm run build` if `dist/server/entry.mjs` is missing.
+- **Session helper**: `createSignedInUser()` from `tests/integration/_helpers/session.ts` — returns `{ userId, email, cookie, supabaseAdmin }`. The cookie is the real `@supabase/ssr` shape; pass it to `fetchRoute(..., { cookie })`.
+- **Route helper**: `fetchRoute(path, { method, body, cookie })` from `tests/integration/_helpers/server.ts` — hits `wrangler dev` on `127.0.0.1:4321`. Origin header is auto-set on non-GET so Astro 6 CSRF doesn't 403.
+- **Counting rows under RLS**: `countOwnTransactions(user)` from `session.ts` — counts the caller's own rows via PostgREST with their access token. Service-role admin client is not a usable counting path in this project (no DML GRANT to `service_role` on `public.transactions`).
+- **Reference tests**:
+  - `tests/integration/risk-01-rls-route-leak.test.ts` — cross-account leak shape (seed via B's authenticated POST, assert A's dashboard).
+  - `tests/integration/risk-03-import-dedupe.test.ts` — re-upload + partial-overlap shape against the import route.
+  - `tests/integration/risk-07-idor-forged-payload.test.ts` — forged `user_id` form field, assert it lands under the session user.
+- **DB-layer regression**: `supabase/tests/*.test.sql` (pgTAP) — runs via `supabase test db` in CI. Use pgTAP for policy-correctness regressions (`SET LOCAL ROLE authenticated` + `request.jwt.claim.sub`); use Vitest integration for route-layer regressions.
+- **Runner**: `npm run test:integration` (all). Single file: `npx vitest run --project integration tests/integration/<file>.test.ts`.
 
 ### 6.3 Adding a tax-math test against an external oracle
 
@@ -157,7 +174,11 @@ the relevant rollout phase ships; before that, it reads "TBD — see §3 Phase
 
 ### 6.7 Per-rollout-phase notes
 
-(Empty. `/10x-implement`'s final sub-phase appends a 2–3 line note per phase capturing anything surprising the rollout taught.)
+#### Phase 1 (testing-bootstrap-critical-path) — 2026-06-25
+
+- The plan named `astro dev` (with an in-process App fallback) as the test server; both broke in this Astro 6.4.8 + `@astrojs/cloudflare` combo with a persistent "module is not defined" reload error. Pivoted to `wrangler dev` against the built `dist/` — closer to production (real workerd) and faster (no Vite reoptimization). The session helper still uses `createServerClient` itself with a capturing cookie adapter, so the cookie format tracks `@supabase/ssr` instead of being hand-rolled.
+- The service-role admin client cannot DML `public.transactions` in this project (only `authenticated` has GRANT). Tests count their own rows via PostgREST with the caller's access token — RLS scopes the count exactly the way the assertions want. Adding a `GRANT ... TO service_role` migration would simplify future seed paths.
+- `npx supabase db reset` is required after pulling a migration that changes enum values — the carryover enum addition was the trip-wire. Cookbook §6.2 calls this out.
 
 ## 7. What We Deliberately Don't Test
 
