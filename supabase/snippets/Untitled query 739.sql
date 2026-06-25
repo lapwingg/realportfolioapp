@@ -1,0 +1,1 @@
+SELECT relrowsecurity, relforcerowsecurity FROM pg_class WHERE relname IN ('transactions','price_snapshots');
