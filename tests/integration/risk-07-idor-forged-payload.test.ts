@@ -9,9 +9,19 @@
 //
 // src/pages/api/transactions/import.ts derives identity from the
 // @supabase/ssr server client (A's cookie) and does not read `user_id` from
-// the form. This test is the regression lock — if a future change starts
-// trusting form `user_id`, B's own-row count goes from 0 to non-zero and
-// this fails.
+// the form. The success-path redirect URL distinguishes "route ignored
+// field" (returns `/setup?imported=N&skipped=M`) from "RLS rejected batch"
+// (returns `/setup?error=...`) — both produce a 303, so the URL is the
+// signal.
+//
+// Mutation drill (verified 2026-06-25): edit import.ts to copy
+// `form.get("user_id")` into the payload's `user_id` field; rebuild; rerun.
+// Expectation: the redirect URL becomes `/setup?error=...` (RLS denies the
+// batch because forged `user_id !== auth.uid()`), the success-path
+// assertion fires red. Without this assertion the test would still catch
+// the regression — but via `countA > 0` failing for the wrong reason (RLS
+// denial of the entire batch). Asserting the success URL keeps the
+// route-layer vs DB-layer distinction visible.
 
 import { readFile } from "node:fs/promises";
 import { describe, it, expect } from "vitest";
@@ -34,6 +44,16 @@ describe("Risk #7 — IDOR via forged user_id in request payload", () => {
       cookie: userA.cookie,
     });
     expect([301, 302, 303]).toContain(res.status);
+
+    // Success-path redirect signature: `/setup?imported=N&skipped=M`. Any
+    // other redirect (especially `/setup?error=...`) means the route
+    // attempted to use the forged `user_id` and the DB layer rejected the
+    // batch — a regression we want loud.
+    const location = res.headers.get("Location") ?? "";
+    expect(
+      location,
+      "route must produce success-path redirect; an error redirect means the route attempted to use the forged user_id",
+    ).toMatch(/^\/setup\?imported=\d+(&skipped=\d+)?$/);
 
     // Each user counts their own rows via their own RLS-scoped session.
     // B should have zero (the forged payload was ignored); A should have > 0.

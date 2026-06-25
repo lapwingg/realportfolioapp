@@ -101,9 +101,16 @@ export default async function setup() {
     ],
     { stdio: ["ignore", "pipe", "pipe"], env: { ...process.env } },
   );
+  // Consume stdout so the OS pipe never fills (~64KB) and blocks wrangler.
+  // We don't echo it (too noisy) but the bytes must be read.
+  wrangler.stdout.on("data", () => {
+    /* drain */
+  });
+  // Forward stderr unconditionally with a prefix — regex filtering on
+  // "error" loses useful diagnostics (warnings, "Address in use") and
+  // echoes benign substrings.
   wrangler.stderr.on("data", (chunk: Buffer) => {
-    const s = chunk.toString();
-    if (/error/i.test(s) && !s.includes("Ready on")) process.stderr.write(`[wrangler] ${s}`);
+    process.stderr.write(`[wrangler] ${chunk.toString()}`);
   });
 
   try {

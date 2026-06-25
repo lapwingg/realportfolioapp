@@ -24,14 +24,11 @@ jobs:
 
       # --- Test phase (added in context/changes/testing-bootstrap-critical-path) ---
       # See context/foundation/test-plan.md §5: required gate after §3 Phase 1.
-
-      - name: Install Supabase CLI
-        uses: supabase/setup-cli@v1
-        with:
-          version: latest
+      # All `supabase` invocations go through `npx` so the version comes from
+      # the npm devDep — single source of truth, no version skew.
 
       - name: Start local Supabase stack
-        run: supabase start
+        run: npx supabase start
         # Applies all migrations in supabase/migrations/.
         # Cold-pull takes 60-90s on a fresh runner.
 
@@ -39,18 +36,40 @@ jobs:
         run: npm test
 
       - name: Integration tests
-        run: npm run test:integration
+        if: ${{ !cancelled() }}
+        # Run even if unit tests failed — parallel signal beats fail-fast
+        # while this suite is young; we want to learn flake patterns early.
         # globalSetup reads `supabase status` for URL/keys, reuses the build
         # from the earlier step, then boots `wrangler dev` for the test run.
+        run: npm run test:integration
 
       - name: DB-layer pgTAP regression
-        run: supabase test db
+        if: ${{ !cancelled() }}
         # Runs supabase/tests/rls_isolation.test.sql. Last so it owns the DB
         # state during its assertions.
+        run: npx supabase test db
+
+      - name: Capture Supabase logs on failure
+        if: failure()
+        # Dumps service logs into a file the next step uploads. Lets us
+        # post-mortem CI failures without re-running locally.
+        run: |
+          mkdir -p ci-logs
+          npx supabase logs api  > ci-logs/supabase-api.log  2>&1 || true
+          npx supabase logs auth > ci-logs/supabase-auth.log 2>&1 || true
+          npx supabase logs db   > ci-logs/supabase-db.log   2>&1 || true
+
+      - name: Upload CI logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-logs
+          path: ci-logs/
+          retention-days: 7
 
       - name: Stop Supabase
         if: always()
-        run: supabase stop --no-backup
+        run: npx supabase stop --no-backup
 
   deploy:
     needs: ci

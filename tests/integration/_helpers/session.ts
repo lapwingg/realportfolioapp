@@ -6,7 +6,6 @@ export interface TestUser {
   userId: string;
   email: string;
   cookie: string;
-  supabaseAdmin: ReturnType<typeof createAdminClient>;
 }
 
 function env(name: string): string {
@@ -60,33 +59,42 @@ export async function createSignedInUser(): Promise<TestUser> {
   if (captured.length === 0) throw new Error("sign-in produced no cookies — @supabase/ssr contract broken?");
 
   const cookie = captured.map(({ name, value }) => `${name}=${encodeURIComponent(value)}`).join("; ");
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  return { userId, email, cookie, supabaseAdmin };
+  return { userId, email, cookie };
+}
+
+function parseCookieHeader(cookie: string): { name: string; value: string }[] {
+  return cookie
+    .split(";")
+    .map((s) => s.trim())
+    .filter((p) => p.length > 0)
+    .map((p) => {
+      const eq = p.indexOf("=");
+      if (eq < 0) return { name: p, value: "" };
+      return { name: p.slice(0, eq), value: decodeURIComponent(p.slice(eq + 1)) };
+    });
 }
 
 /**
- * Extract the access_token from the auth-token cookie shape @supabase/ssr
- * writes. Lets tests count their own rows via PostgREST without depending on
- * service_role having DML grants on user tables.
+ * Pull the access_token out of an auth cookie by handing the cookies back
+ * to `@supabase/ssr` and asking for the session — same SDK that wrote them.
+ * Handles cookie chunking (`…auth-token.0`, `.1`) without us re-implementing
+ * the chunk-reassembly logic. If the SDK ever changes its on-the-wire shape,
+ * this stays correct because both write and read go through the SDK.
  */
-export function accessTokenFromCookie(cookie: string): string {
-  const parts = cookie.split(";").map((s) => s.trim());
-  for (const p of parts) {
-    if (!p.includes("auth-token")) continue;
-    const eq = p.indexOf("=");
-    if (eq < 0) continue;
-    const raw = decodeURIComponent(p.slice(eq + 1));
-    const payload = raw.startsWith("base64-")
-      ? Buffer.from(raw.slice("base64-".length), "base64").toString("utf8")
-      : raw;
-    try {
-      const obj = JSON.parse(payload) as { access_token?: string };
-      if (obj.access_token) return obj.access_token;
-    } catch {
-      // chunked / non-JSON; keep looking
-    }
-  }
-  throw new Error("could not extract access_token from auth cookie");
+export async function accessTokenFromCookie(cookie: string): Promise<string> {
+  const cookies = parseCookieHeader(cookie);
+  const readClient = createServerClient(env("SUPABASE_URL"), env("SUPABASE_KEY"), {
+    cookies: {
+      getAll: () => cookies,
+      setAll: () => {
+        /* no-op */
+      },
+    },
+  });
+  const { data, error } = await readClient.auth.getSession();
+  if (error) throw new Error(`getSession failed: ${error.message}`);
+  if (!data.session?.access_token) throw new Error("no access_token in session — sign-in incomplete?");
+  return data.session.access_token;
 }
 
 /**
@@ -98,10 +106,11 @@ export async function countOwnTransactions(user: TestUser): Promise<number> {
   const url = process.env.SUPABASE_URL;
   const key = process.env.SUPABASE_KEY;
   if (!url || !key) throw new Error("supabase env not set");
+  const token = await accessTokenFromCookie(user.cookie);
   const res = await fetch(`${url}/rest/v1/transactions?select=id`, {
     headers: {
       apikey: key,
-      Authorization: `Bearer ${accessTokenFromCookie(user.cookie)}`,
+      Authorization: `Bearer ${token}`,
       Prefer: "count=exact",
       "Range-Unit": "items",
       Range: "0-0",
