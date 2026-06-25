@@ -420,9 +420,9 @@ Brak Chromatic/Percy w projekcie. Visual diff manualny przed/po każdej fazie �
 
 #### Automated
 
-- [x] 2.1 `npm run build` green (astro-icon buduje pod Cloudflare adapter)
-- [x] 2.2 `npm run lint` clean
-- [x] 2.3 W zbudowanym HTML `/auth/signin` widać inline SVG przy bulletach AppIntro
+- [x] 2.1 `npm run build` green (astro-icon buduje pod Cloudflare adapter) — a225626
+- [x] 2.2 `npm run lint` clean — a225626
+- [x] 2.3 W zbudowanym HTML `/auth/signin` widać inline SVG przy bulletach AppIntro — a225626
 
 #### Manual
 
@@ -434,10 +434,10 @@ Brak Chromatic/Percy w projekcie. Visual diff manualny przed/po każdej fazie �
 
 #### Automated
 
-- [ ] 3.1 `npm run verify-scenarios` still passes (regression guard)
-- [ ] 3.2 `npm run verify-valuation` still passes (regression guard)
-- [ ] 3.3 `npm run lint` clean
-- [ ] 3.4 `npm run build` green
+- [x] 3.1 `npm run verify-scenarios` still passes (regression guard)
+- [x] 3.2 `npm run verify-valuation` still passes (regression guard)
+- [x] 3.3 `npm run lint` clean
+- [x] 3.4 `npm run build` green
 
 #### Manual
 

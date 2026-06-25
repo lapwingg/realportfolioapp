@@ -7,6 +7,7 @@ import { computeScenarios } from "@/lib/scenarios/compute";
 import { computeAvailability } from "@/lib/scenarios/availability";
 import type { ScenarioId } from "@/lib/scenarios/types";
 import type { Tables } from "@/lib/database.types";
+import { Icon } from "astro-icon/components";
 
 export const prerender = false;
 
@@ -128,6 +129,13 @@ const SCENARIO_LABELS: Record<ScenarioId, string> = {
   retirement: "Wypłata 60+",
 };
 
+const SCENARIO_ICONS: Record<ScenarioId, string> = {
+  immediate: "lucide:log-out",
+  illness: "lucide:heart-pulse",
+  housing: "lucide:home",
+  retirement: "lucide:hourglass",
+};
+
 const SCENARIO_EXPLANATIONS: Record<ScenarioId, string> = {
   immediate:
     "Zwrot z PPK przed 60. rokiem życia. Otrzymujesz 100% swoich wpłat i 70% wpłat pracodawcy; pozostałe 30% wpłat pracodawcy trafia do ZUS. Wpłaty od państwa (subsydia) przepadają. Od zysku kapitałowego pobierany jest podatek Belki (19%). Podstawa: Ustawa o PPK art. 105.",
@@ -226,8 +234,13 @@ const SCENARIO_EXPLANATIONS: Record<ScenarioId, string> = {
               const explanation = SCENARIO_EXPLANATIONS[scenario.id];
               return (
                 <article class="rounded-xl border border-white/10 bg-white/5 p-5">
-                  <h2 class="text-sm font-semibold text-blue-100/80">{label}</h2>
-                  <p class="mt-2 text-2xl font-bold tabular-nums">{currencyFmt.format(scenario.netAmount)}</p>
+                  <div class="flex items-center gap-2">
+                    <Icon name={SCENARIO_ICONS[scenario.id]} class="h-5 w-5 flex-none text-blue-200/90" />
+                    <h2 class="text-sm font-semibold text-blue-100/80">{label}</h2>
+                  </div>
+                  <p class="mt-2 text-3xl font-bold tracking-tight tabular-nums">
+                    {currencyFmt.format(scenario.netAmount)}
+                  </p>
 
                   {birthDate === null ? (
                     <p class="mt-1 text-xs text-yellow-200/80">
@@ -238,29 +251,30 @@ const SCENARIO_EXPLANATIONS: Record<ScenarioId, string> = {
                       , aby zobaczyć daty dostępności.
                     </p>
                   ) : avail?.available && avail.availableUntil !== null ? (
-                    <p class="mt-1 text-xs text-blue-100/70">
-                      Dostępne do {formatPl(avail.availableUntil)} ({yearsTo(avail.availableUntil)})
+                    <p class="mt-2 text-base font-semibold text-emerald-300 tabular-nums">
+                      Dostępne do {formatPl(avail.availableUntil)} — masz jeszcze {yearsTo(avail.availableUntil)} na
+                      bezprocentową pożyczkę
                     </p>
                   ) : avail?.available ? (
-                    <p class="mt-1 text-xs text-blue-100/70">Dostępne od razu</p>
+                    <p class="mt-2 text-base font-semibold text-emerald-300">Dostępne od razu</p>
                   ) : avail !== undefined && !avail.available && avail.availableFrom !== null ? (
                     <p class="mt-1 text-xs text-blue-100/70">
                       Dostępne od {formatPl(avail.availableFrom)} ({yearsTo(avail.availableFrom)})
                     </p>
                   ) : avail !== undefined && !avail.available && avail.availableUntil !== null ? (
-                    <p class="mt-1 text-xs text-blue-100/70">Niedostępne (po {formatPl(avail.availableUntil)})</p>
+                    <p class="mt-1 text-xs text-blue-100/60">Niedostępne (po {formatPl(avail.availableUntil)})</p>
                   ) : null}
 
                   {(scenario.id === "immediate" || scenario.id === "retirement") &&
                     scenario.gainLoss !== null &&
                     scenario.gainLossPercent !== null &&
                     (scenario.gainLoss >= 0 ? (
-                      <p class="mt-1 text-xs text-green-200/80 tabular-nums">
+                      <p class="mt-2 text-base font-semibold text-emerald-300 tabular-nums">
                         + {currencyFmt.format(scenario.gainLoss)} ({(scenario.gainLossPercent * 100).toFixed(1)}%) zysk
                         vs. własny kapitał
                       </p>
                     ) : (
-                      <p class="mt-1 text-xs text-red-300/80 tabular-nums">
+                      <p class="mt-1 text-xs text-rose-200/60 tabular-nums">
                         − {currencyFmt.format(Math.abs(scenario.gainLoss))} (
                         {(scenario.gainLossPercent * 100).toFixed(1)}%) strata vs. własny kapitał
                       </p>
