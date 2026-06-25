@@ -509,10 +509,10 @@ Fill in the §6.1 and §6.2 placeholders in `context/foundation/test-plan.md` wi
 
 #### Automated
 
-- [x] 5.1 `grep "TBD — see §3 Phase 1" context/foundation/test-plan.md` returns zero matches
-- [x] 5.2 §3 Phase 1 row marked `complete` in `test-plan.md`
+- [x] 5.1 `grep "TBD — see §3 Phase 1" context/foundation/test-plan.md` returns zero matches — d931200
+- [x] 5.2 §3 Phase 1 row marked `complete` in `test-plan.md` — d931200
 
 #### Manual
 
-- [x] 5.3 Cold-context reader can add a unit test and an integration test from §6.1 + §6.2 alone
-- [x] 5.4 `/10x-test-plan` (no args) advances to Phase 2 on next invocation
+- [x] 5.3 Cold-context reader can add a unit test and an integration test from §6.1 + §6.2 alone — d931200
+- [x] 5.4 `/10x-test-plan` (no args) advances to Phase 2 on next invocation — d931200
