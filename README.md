@@ -111,7 +111,13 @@ npx supabase stop
 
 The local Studio UI is available at `http://localhost:54323`.
 
-No database tables or migrations are required — this project uses Supabase Auth's built-in `auth.users` table only.
+Migration files live under `supabase/migrations/` and are applied automatically by `supabase start`. To re-apply from zero, see the [Database](#database) section.
+
+> **Note for environments with corporate TLS inspection** (where outbound certificate verification fails for `deno.land` and similar): `supabase start` will fail bringing up the `edge_runtime` container. Since this project does not use Edge Functions, you can exclude the unneeded containers:
+>
+> ```bash
+> npx supabase start --exclude edge-runtime,vector,imgproxy,inbucket,realtime,storage-api
+> ```
 
 ### Using a cloud Supabase project instead
 
@@ -147,6 +153,18 @@ Users can then sign in immediately after sign-up without clicking a confirmation
 | `/dashboard`          | Example protected page (redirects to `/auth/signin` if unauthenticated) |
 
 Route protection is handled in `src/middleware.ts`. Add paths to the `PROTECTED_ROUTES` array there to require authentication.
+
+## Database
+
+Migrations under `supabase/migrations/` are applied in order. Schema state is verified by a pgTAP cross-account isolation test that proves Row-Level Security denies cross-user reads and writes at the database layer — this test **MUST stay green on every migration**; a regression here is a regression of the load-bearing PRD NFR ("no cross-account data exposure under any condition").
+
+Local workflow:
+
+```bash
+npx supabase start    # or with --exclude flags (see Supabase Configuration note above)
+npx supabase db reset # applies all migrations from zero
+npx supabase test db  # runs supabase/tests/*.test.sql via pgTAP
+```
 
 ## Deployment
 

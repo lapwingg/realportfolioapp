@@ -294,27 +294,27 @@ Link the local Supabase project to the hosted Supabase project, push the migrati
 
 #### Automated
 
-- [x] 1.1 `npx supabase start` brings up the local stack
-- [x] 1.2 `npx supabase db reset` applies both migrations from zero with no errors
-- [x] 1.3 `npx supabase db lint` returns no warnings on the new migrations
-- [x] 1.4 `psql ... -c "\d+ transactions"` shows RLS enabled and four policies present
+- [x] 1.1 `npx supabase start` brings up the local stack — 25df9fa
+- [x] 1.2 `npx supabase db reset` applies both migrations from zero with no errors — 25df9fa
+- [x] 1.3 `npx supabase db lint` returns no warnings on the new migrations — 25df9fa
+- [x] 1.4 `psql ... -c "\d+ transactions"` shows RLS enabled and four policies present — 25df9fa
 
 #### Manual
 
-- [x] 1.5 Studio shows four policies per table, all targeting role `authenticated`
-- [x] 1.6 `SELECT relrowsecurity, relforcerowsecurity FROM pg_class WHERE relname IN ('transactions','price_snapshots');` returns `true, true` for both
+- [x] 1.5 Studio shows four policies per table, all targeting role `authenticated` — 25df9fa
+- [x] 1.6 `SELECT relrowsecurity, relforcerowsecurity FROM pg_class WHERE relname IN ('transactions','price_snapshots');` returns `true, true` for both — 25df9fa
 
 ### Phase 2: RLS isolation test harness
 
 #### Automated
 
-- [ ] 2.1 `npx supabase test db` exits 0 with all pgTAP assertions passing
+- [x] 2.1 `npx supabase test db` exits 0 with all pgTAP assertions passing
 
 #### Manual
 
-- [ ] 2.2 Test file reads end-to-end without `// TODO`s or skipped assertions
-- [ ] 2.3 `supabase test db` output captured in the PR description
-- [ ] 2.4 Sanity-check drill executed: remove `FORCE RLS` on one table → `supabase test db` fails → restore → green; result pasted in PR description; broken state NOT committed
+- [x] 2.2 Test file reads end-to-end without `// TODO`s or skipped assertions
+- [x] 2.3 `supabase test db` output captured in the PR description
+- [x] 2.4 Sanity-check drill executed: remove `FORCE RLS` on one table → `supabase test db` fails → restore → green; result pasted in PR description; broken state NOT committed
 
 ### Phase 3: Hosted project link + generated TypeScript types
 
