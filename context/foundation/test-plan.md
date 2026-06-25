@@ -79,7 +79,7 @@ orchestrator updates Status as artifacts appear on disk.
 | # | Phase name | Goal (one line) | Risks covered | Test types | Status | Change folder |
 |---|---|---|---|---|---|---|
 | 1 | Bootstrap test runner + data-isolation critical path | Install Vitest, wire it into CI, then defend RLS leak / dedupe / IDOR at the cheapest layer | #1, #3, #7 | unit + integration | complete | `context/changes/testing-bootstrap-critical-path/` |
-| 2 | Tax-math hardening with external oracles | Lock the three withdrawal-scenario amounts and the cross-cutoff valuation against hand-computed worked examples (no oracles lifted from the implementation) | #2, #4 | unit (table-driven) | not started | — |
+| 2 | Tax-math hardening with external oracles | Lock the three withdrawal-scenario amounts and the cross-cutoff valuation against hand-computed worked examples (no oracles lifted from the implementation) | #2, #4 | unit (table-driven) | change opened | `context/changes/testing-tax-math-hardening/` |
 | 3 | External-edge contract guards (scraper + CPU budget) | Lock analizy.pl extraction against a saved HTML fixture + nightly shape probe; enforce the scenarios hot-loop CPU budget under `wrangler --remote` with a realistic synthetic history | #5, #6 | unit + perf check under `wrangler --remote` | not started | — |
 | 4 | Quality-gates wiring + optional happy-path e2e | Require unit + integration in CI; optionally add a single Playwright smoke for sign-in → upload → dashboard renders all three scenarios | cross-cutting | gates + optional e2e | not started | — |
 
