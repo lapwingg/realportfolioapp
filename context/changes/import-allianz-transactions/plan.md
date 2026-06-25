@@ -360,31 +360,31 @@ Add `src/pages/setup.astro` (server-rendered, reads counts under RLS), `src/comp
 
 #### Automated
 
-- [x] 1.1 `npm install` succeeds with the new deps
-- [x] 1.2 `npm run verify-parser` exits 0 with the summary log line
-- [x] 1.3 `npm run lint` passes on the new files
-- [x] 1.4 `npm run build` succeeds with the new dependency imported by `src/lib/`
-- [x] 1.5 `npx astro check` passes including the `contribution_source` enum import
+- [x] 1.1 `npm install` succeeds with the new deps — ef1f7b8
+- [x] 1.2 `npm run verify-parser` exits 0 with the summary log line — ef1f7b8
+- [x] 1.3 `npm run lint` passes on the new files — ef1f7b8
+- [x] 1.4 `npm run build` succeeds with the new dependency imported by `src/lib/` — ef1f7b8
+- [x] 1.5 `npx astro check` passes including the `contribution_source` enum import — ef1f7b8
 
 #### Manual
 
-- [x] 1.6 Parser + categoriser produce expected per-source counts on the real CSV via one-off REPL
-- [x] 1.7 Zamiana rows (lines 56–59) confirmed filtered out — total parsed = total rows − 4
+- [x] 1.6 Parser + categoriser produce expected per-source counts on the real CSV via one-off REPL — ef1f7b8
+- [x] 1.7 Zamiana rows (lines 56–59) confirmed filtered out — total parsed = total rows − 4 — ef1f7b8
 
 ### Phase 2: API route + DB writes
 
 #### Automated
 
-- [ ] 2.1 `npm run lint` passes on the new route
-- [ ] 2.2 `npx astro check` passes — `.upsert(...).select('id')` types tie out against `Database`
-- [ ] 2.3 `npm run build` succeeds — route included in SSR bundle
+- [x] 2.1 `npm run lint` passes on the new route
+- [x] 2.2 `npx astro check` passes — `.upsert(...).select('id')` types tie out against `Database`
+- [x] 2.3 `npm run build` succeeds — route included in SSR bundle
 
 #### Manual
 
-- [ ] 2.4 curl POST of sample fixture → `303` to `/setup?imported=6&skipped=0`
-- [ ] 2.5 Re-POST of same fixture → `303` to `/setup?imported=0&skipped=6` (all duplicates)
-- [ ] 2.6 POST of malformed fixture → `303` to `/setup?error=Row+3%3A...`; zero rows landed in Studio
-- [ ] 2.7 Studio shows correctly-tagged rows with non-null `user_id` matching the test user
+- [x] 2.4 curl POST of sample fixture → `303` to `/setup?imported=6&skipped=0`
+- [x] 2.5 Re-POST of same fixture → `303` to `/setup?imported=0&skipped=6` (all duplicates)
+- [x] 2.6 POST of malformed fixture → `303` to `/setup?error=Row+3%3A...`; zero rows landed in Studio
+- [x] 2.7 Studio shows correctly-tagged rows with non-null `user_id` matching the test user
 
 ### Phase 3: /setup page + middleware + dashboard link
 
