@@ -18,9 +18,16 @@ export type FetchRouteInit = Omit<RequestInit, "headers"> & {
  * 3xx responses with a `Location` header rather than silently followed.
  */
 export async function fetchRoute(path: string, init: FetchRouteInit = {}): Promise<Response> {
+  const base = baseUrl();
   const headers = new Headers(init.headers);
   if (init.cookie) headers.set("Cookie", init.cookie);
-  return fetch(new URL(path, baseUrl()), {
+  // Astro 6 security.checkOrigin (default true) rejects POST/PUT/DELETE/PATCH
+  // when the Origin doesn't match the request host. Set Origin to the test
+  // base so non-GET requests don't 403 out of the gate.
+  if (init.method && init.method !== "GET" && !headers.has("Origin")) {
+    headers.set("Origin", base);
+  }
+  return fetch(new URL(path, base), {
     ...init,
     redirect: init.redirect ?? "manual",
     headers,

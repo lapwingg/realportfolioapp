@@ -466,29 +466,29 @@ Fill in the §6.1 and §6.2 placeholders in `context/foundation/test-plan.md` wi
 
 #### Automated
 
-- [x] 2.1 `npm run test:integration` exits 0 with 2 passing tests from `tests/integration/_smoke/dashboard-auth.test.ts`
-- [x] 2.2 `supabase status` reports `running` after the test run
-- [x] 2.3 `npm test` still exits 0
-- [x] 2.4 `npm run lint` still exits 0
+- [x] 2.1 `npm run test:integration` exits 0 with 2 passing tests from `tests/integration/_smoke/dashboard-auth.test.ts` — dd5cc01
+- [x] 2.2 `supabase status` reports `running` after the test run — dd5cc01
+- [x] 2.3 `npm test` still exits 0 — dd5cc01
+- [x] 2.4 `npm run lint` still exits 0 — dd5cc01
 
 #### Manual
 
-- [x] 2.5 Warm `npm run test:integration` completes in <15s
-- [x] 2.6 Cold-start path (after `supabase stop`) boots the stack via global setup
+- [x] 2.5 Warm `npm run test:integration` completes in <15s — dd5cc01
+- [x] 2.6 Cold-start path (after `supabase stop`) boots the stack via global setup — dd5cc01
 
 ### Phase 3: Risk-defending integration tests
 
 #### Automated
 
-- [ ] 3.1 `npm run test:integration` exits 0 with 6 or 7 passing tests covering smoke + Risk #1 + #3 + #7
-- [ ] 3.2 Three consecutive `npm run test:integration` runs pass without manual reset
-- [ ] 3.3 `npm test` and `npm run lint` still exit 0
+- [x] 3.1 `npm run test:integration` exits 0 with 6 or 7 passing tests covering smoke + Risk #1 + #3 + #7
+- [x] 3.2 Three consecutive `npm run test:integration` runs pass without manual reset
+- [x] 3.3 `npm test` and `npm run lint` still exit 0
 
 #### Manual
 
-- [ ] 3.4 Mutation drill — weakened RLS policy fails Risk #1 test; revert restores green
-- [ ] 3.5 Mutation drill — `insert` (no `onConflict`) fails Risk #3 byte-identical test; revert restores green
-- [ ] 3.6 Mutation drill — `import.ts` reading `user_id` from form fails Risk #7 test; revert restores green
+- [x] 3.4 Mutation drill — weakened RLS policy fails Risk #1 test; revert restores green
+- [x] 3.5 Mutation drill — `insert` (no `onConflict`) fails Risk #3 byte-identical test; revert restores green
+- [x] 3.6 Mutation drill — `import.ts` reading `user_id` from form fails Risk #7 test; revert restores green
 
 ### Phase 4: CI wiring + required gate
 
