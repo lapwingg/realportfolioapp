@@ -678,10 +678,10 @@ Two small landing-experience changes. First: a one-line redirect target swap so 
 
 #### Automated
 
-- [x] 4.1 `npm run verify-scenarios` still passes (regression guard)
-- [x] 4.2 `npm run verify-valuation` still passes (regression guard)
-- [x] 4.3 `npm run lint` is clean
-- [x] 4.4 `npm run build` is green
+- [x] 4.1 `npm run verify-scenarios` still passes (regression guard) — 6327792
+- [x] 4.2 `npm run verify-valuation` still passes (regression guard) — 6327792
+- [x] 4.3 `npm run lint` is clean — 6327792
+- [x] 4.4 `npm run build` is green — 6327792
 - [ ] 4.5 Signed-out request to `/dashboard` redirects to `/auth/signin`
 
 #### Manual
@@ -701,10 +701,10 @@ Two small landing-experience changes. First: a one-line redirect target swap so 
 
 #### Automated
 
-- [ ] 5.1 `npm run lint` is clean
-- [ ] 5.2 `npm run build` is green
-- [ ] 5.3 `grep -n "redirect(\"/\")" src/pages/api/auth/signin.ts` returns no matches (signin redirect change landed)
-- [ ] 5.4 `grep -n "AppIntro" src/pages/auth/signin.astro src/pages/auth/signup.astro` returns matches in both files
+- [x] 5.1 `npm run lint` is clean
+- [x] 5.2 `npm run build` is green
+- [x] 5.3 `grep -n "redirect(\"/\")" src/pages/api/auth/signin.ts` returns no matches (signin redirect change landed)
+- [x] 5.4 `grep -n "AppIntro" src/pages/auth/signin.astro src/pages/auth/signup.astro` returns matches in both files
 
 #### Manual
 
