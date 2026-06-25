@@ -628,8 +628,8 @@ Two small landing-experience changes. First: a one-line redirect target swap so 
 #### Automated
 
 - [ ] 1.1 Migration applies cleanly locally: `npx supabase db reset` returns 0
-- [x] 1.2 Type-check passes: `npm run lint` is clean
-- [x] 1.3 Build passes: `npm run build` is green
+- [x] 1.2 Type-check passes: `npm run lint` is clean — d0e010a
+- [x] 1.3 Build passes: `npm run build` is green — d0e010a
 
 #### Manual
 
@@ -642,12 +642,12 @@ Two small landing-experience changes. First: a one-line redirect target swap so 
 #### Automated
 
 - [ ] 2.1 All TODO citations in `tax-constants.ts` replaced with real URLs + retrieval dates (grep returns empty)
-- [ ] 2.2 `npm run verify-scenarios` passes (all 8-12 assertions green)
-- [ ] 2.3 `npm run verify-valuation` still passes (regression guard)
-- [ ] 2.4 `npm run verify-parser` still passes (regression guard)
-- [ ] 2.5 `npm run verify-price-parser` still passes (regression guard)
-- [ ] 2.6 `npm run lint` is clean
-- [ ] 2.7 `npm run build` is green
+- [x] 2.2 `npm run verify-scenarios` passes (all 8-12 assertions green)
+- [x] 2.3 `npm run verify-valuation` still passes (regression guard)
+- [x] 2.4 `npm run verify-parser` still passes (regression guard)
+- [x] 2.5 `npm run verify-price-parser` still passes (regression guard)
+- [x] 2.6 `npm run lint` is clean
+- [x] 2.7 `npm run build` is green
 
 #### Manual
 
