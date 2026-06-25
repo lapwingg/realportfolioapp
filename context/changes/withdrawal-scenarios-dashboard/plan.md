@@ -658,8 +658,8 @@ Two small landing-experience changes. First: a one-line redirect target swap so 
 
 #### Automated
 
-- [x] 3.1 `npm run lint` is clean
-- [x] 3.2 `npm run build` is green
+- [x] 3.1 `npm run lint` is clean — 27dd84d
+- [x] 3.2 `npm run build` is green — 27dd84d
 - [ ] 3.3 Signed-out POST to `/api/profile/save-birth-date` returns 302/303 to `/auth/signin`
 
 #### Manual
@@ -678,10 +678,10 @@ Two small landing-experience changes. First: a one-line redirect target swap so 
 
 #### Automated
 
-- [ ] 4.1 `npm run verify-scenarios` still passes (regression guard)
-- [ ] 4.2 `npm run verify-valuation` still passes (regression guard)
-- [ ] 4.3 `npm run lint` is clean
-- [ ] 4.4 `npm run build` is green
+- [x] 4.1 `npm run verify-scenarios` still passes (regression guard)
+- [x] 4.2 `npm run verify-valuation` still passes (regression guard)
+- [x] 4.3 `npm run lint` is clean
+- [x] 4.4 `npm run build` is green
 - [ ] 4.5 Signed-out request to `/dashboard` redirects to `/auth/signin`
 
 #### Manual

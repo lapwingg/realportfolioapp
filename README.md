@@ -216,6 +216,40 @@ The parser is a pure module at `src/lib/analizy/parse.ts`. A committed fixture l
 
 **Single-fund approximation (MVP caveat)**: the dashboard valuation is `SUM(units WHERE transaction_date >= MAX(carryover date)) × ALL88 unit price` (or `SUM(units) × price` when no carryover exists). This is mathematically exact for users who have either (a) never split across funds or (b) been through any number of fund switches into a final single fund — which matches the current user, who is fully switched out of `Allianz PPK 2055` into `Allianz Plan Emerytalny 2055`. For a user still split across multiple funds simultaneously, the number would be inaccurate — a future slice would need to extend `transactions` with a per-row fund identifier and the price-fetch route with a per-ticker lookup. The PRD §Non-Goals explicitly defers multi-fund support to v2.
 
+## Scenariusze wypłat
+
+Below the valuation block, `/dashboard` renders four after-tax withdrawal scenarios — each computed from `transactions` + the latest `price_snapshots` row + the optional `profiles.birth_date`. Amounts work without a saved birth date; the date only drives the per-card availability labels.
+
+The four scenarios:
+
+- **Zamknięcie konta (zwrot)** — withdraw early (before 60). Get 100% of your own contributions + 70% of employer contributions (30% to ZUS). State subsidies are forfeited. Belka tax (19%) applies to positive capital gain. _Basis: Ustawa o PPK art. 105._ _Caveat: per-source attribution uses proportional gross weights — the only method computable from our data once S-04 carryover rows enter the picture._
+- **Wypłata 25% (poważne zachorowanie)** — withdraw 25% of the portfolio tax-free in case of serious illness; no repayment, no age gate. _Basis: Ustawa o PPK art. 101._
+- **Pożyczka 100% (cele mieszkaniowe)** — borrow up to 100% of the portfolio for a first home; repay within 5 years; available only under age 45. _Basis: Ustawa o PPK art. 98._
+- **Wypłata 60+** — default split: 25% lump sum + 75% in 120 monthly instalments, all tax-free. _Basis: Ustawa o PPK art. 99._
+
+A `<details><summary>Jak to działa?</summary>` block on each card carries a 3-5 sentence Polish explanation and the statute reference.
+
+The birth-date input lives on `/setup` under the **Data urodzenia** section. It writes a single `profiles` row per user under FORCE RLS. The dashboard scenario cards work without it; missing birth date shows a yellow `Podaj datę urodzenia…` hint linking back to `/setup#birth-date` in place of each availability label.
+
+**Allianz-only constraint**: the app supports only the `Allianz PPK 2055` plan; multi-fund support is deferred to v2 (PRD §Non-Goals). A footer line on `/dashboard` and the same line on the auth pages restate this.
+
+**Local regression net**: `npm run verify-scenarios` exercises the pure helpers under `src/lib/scenarios/` across 12 worked examples (scenarios × profit/loss/no-own/carryover × availability boundaries).
+
+### Cloudflare CPU-budget check (gated, before public launch)
+
+The scenarios helper is the slice the `context/foundation/lessons.md` rule names as the risk for the Cloudflare Workers free-plan 10ms CPU budget. Before going public, verify under a realistic load:
+
+```bash
+# Generate a 5-year synthetic CSV (one row per month × 60 months × 3 sources
+# ≈ 180 rows + several Zamiana rows). Import via /setup. Then time the dashboard
+# render against a Worker reading from the same Supabase project as production:
+npx wrangler dev --remote
+# In a separate terminal:
+time curl -s -b "<auth-cookie>" http://127.0.0.1:8787/dashboard > /dev/null
+```
+
+Run the `time curl` 5–10 times consecutively and record the median wall-time. Under ~50ms wall implies CPU well under the 10ms limit (network + Supabase round-trips dominate). If wall-time exceeds ~50ms repeatedly, profile under `npx wrangler dev --inspect` (Chrome DevTools), then either optimize the helper hot path or upgrade to **Workers Paid ($5/mo)** to lift the limit to 50ms CPU.
+
 ## Deployment
 
 This project deploys to [Cloudflare Workers](https://workers.cloudflare.com/).

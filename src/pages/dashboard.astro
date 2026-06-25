@@ -3,6 +3,9 @@ import Layout from "@/layouts/Layout.astro";
 import { createClient } from "@/lib/supabase";
 import { TICKER, FUND_LABEL } from "@/lib/analizy/types";
 import { computeValuation } from "@/lib/valuation/compute";
+import { computeScenarios } from "@/lib/scenarios/compute";
+import { computeAvailability } from "@/lib/scenarios/availability";
+import type { ScenarioId } from "@/lib/scenarios/types";
 
 export const prerender = false;
 
@@ -18,13 +21,22 @@ const supabase = createClient(Astro.request.headers, Astro.cookies);
 let unitsSum = 0;
 let cutoffDate: string | null = null;
 let latest: { price: number | string; fetched_at: string } | null = null;
+let birthDate: string | null = null;
+interface TxRow {
+  transaction_date: string;
+  source: string;
+  units: number;
+  gross_amount: number;
+}
+let txRows: TxRow[] = [];
 const dbErrors: string[] = [];
 
 if (supabase) {
-  const txResult = await supabase.from("transactions").select("transaction_date, source, units");
+  const txResult = await supabase.from("transactions").select("transaction_date, source, units, gross_amount");
   if (txResult.error) {
     dbErrors.push(txResult.error.message);
   } else {
+    txRows = txResult.data;
     const valuation = computeValuation(txResult.data);
     unitsSum = valuation.unitsSum;
     cutoffDate = valuation.cutoffDate;
@@ -41,6 +53,13 @@ if (supabase) {
     dbErrors.push(snResult.error.message);
   } else {
     latest = snResult.data;
+  }
+
+  const profileResult = await supabase.from("profiles").select("birth_date").maybeSingle();
+  if (profileResult.error) {
+    dbErrors.push(profileResult.error.message);
+  } else {
+    birthDate = profileResult.data?.birth_date ?? null;
   }
 }
 
@@ -92,6 +111,37 @@ function relativeTimePl(fetchedAt: Date): string {
 const relTime = fetchedAtDate !== null ? relativeTimePl(fetchedAtDate) : null;
 const absTime = fetchedAtDate !== null ? fetchedAtDate.toLocaleString("pl-PL") : null;
 const cutoffDisplay = cutoffDate !== null ? new Date(cutoffDate).toLocaleDateString("pl-PL") : null;
+
+const scenariosResult = latestPrice !== null && unitsSum > 0 ? computeScenarios(txRows, latestPrice) : null;
+const availability = computeAvailability(birthDate, new Date());
+
+function formatPl(iso: string): string {
+  return new Date(`${iso}T00:00:00Z`).toLocaleDateString("pl-PL");
+}
+function yearsTo(iso: string): string {
+  const target = new Date(`${iso}T00:00:00Z`).getTime();
+  const diffMs = target - Date.now();
+  const years = Math.round(Math.abs(diffMs) / (365.25 * 24 * 60 * 60 * 1000));
+  return diffMs >= 0 ? `za ${String(years)} lat` : `${String(years)} lat temu`;
+}
+
+const SCENARIO_LABELS: Record<ScenarioId, string> = {
+  immediate: "Zamknięcie konta (zwrot)",
+  illness: "Wypłata 25% (poważne zachorowanie)",
+  housing: "Pożyczka 100% (cele mieszkaniowe)",
+  retirement: "Wypłata 60+",
+};
+
+const SCENARIO_EXPLANATIONS: Record<ScenarioId, string> = {
+  immediate:
+    "Zwrot z PPK przed 60. rokiem życia. Otrzymujesz 100% swoich wpłat i 70% wpłat pracodawcy; pozostałe 30% wpłat pracodawcy trafia do ZUS. Wpłaty od państwa (subsydia) przepadają. Od zysku kapitałowego pobierany jest podatek Belki (19%). Podstawa: Ustawa o PPK art. 105.",
+  illness:
+    "Wypłata 25% środków zgromadzonych w PPK w przypadku poważnego zachorowania uczestnika lub jego najbliższych. Środki są wolne od podatku i nie wymagają zwrotu. Możesz wnioskować w każdym wieku. Podstawa: Ustawa o PPK art. 101.",
+  housing:
+    "Pożyczka do 100% środków zgromadzonych w PPK na pokrycie wkładu własnego przy zakupie pierwszego mieszkania lub domu. Dostępna tylko dla uczestników poniżej 45. roku życia. Środki należy zwrócić w ciągu 5 lat. Podstawa: Ustawa o PPK art. 98.",
+  retirement:
+    "Wypłata po osiągnięciu 60. roku życia. Domyślnie: 25% jednorazowo + 75% w 120 miesięcznych ratach, całość bez podatku. Możesz też wybrać wypłatę 100% jednorazowo, ale wtedy 75% środków zostanie objętych podatkiem Belki — ten wariant nie jest tu pokazany. Podstawa: Ustawa o PPK art. 99.",
+};
 ---
 
 <Layout title="Dashboard">
@@ -171,6 +221,93 @@ const cutoffDisplay = cutoffDate !== null ? new Date(cutoffDate).toLocaleDateStr
         )
       }
 
+      {
+        scenariosResult !== null && (
+          <section class="mb-6 flex flex-col gap-4">
+            {scenariosResult.scenarios.map((scenario) => {
+              const avail = availability.find((a) => a.id === scenario.id);
+              const label = SCENARIO_LABELS[scenario.id];
+              const explanation = SCENARIO_EXPLANATIONS[scenario.id];
+              return (
+                <article class="rounded-xl border border-white/10 bg-white/5 p-5">
+                  <h2 class="text-sm font-semibold text-blue-100/80">{label}</h2>
+                  <p class="mt-2 text-2xl font-bold tabular-nums">{currencyFmt.format(scenario.netAmount)}</p>
+
+                  {birthDate === null ? (
+                    <p class="mt-1 text-xs text-yellow-200/80">
+                      Podaj{" "}
+                      <a href="/setup#birth-date" class="underline">
+                        datę urodzenia
+                      </a>
+                      , aby zobaczyć daty dostępności.
+                    </p>
+                  ) : avail?.available && avail.availableUntil !== null ? (
+                    <p class="mt-1 text-xs text-blue-100/70">
+                      Dostępne do {formatPl(avail.availableUntil)} ({yearsTo(avail.availableUntil)})
+                    </p>
+                  ) : avail?.available ? (
+                    <p class="mt-1 text-xs text-blue-100/70">Dostępne od razu</p>
+                  ) : avail !== undefined && !avail.available && avail.availableFrom !== null ? (
+                    <p class="mt-1 text-xs text-blue-100/70">
+                      Dostępne od {formatPl(avail.availableFrom)} ({yearsTo(avail.availableFrom)})
+                    </p>
+                  ) : avail !== undefined && !avail.available && avail.availableUntil !== null ? (
+                    <p class="mt-1 text-xs text-blue-100/70">Niedostępne (po {formatPl(avail.availableUntil)})</p>
+                  ) : null}
+
+                  {(scenario.id === "immediate" || scenario.id === "retirement") &&
+                    scenario.gainLoss !== null &&
+                    scenario.gainLossPercent !== null &&
+                    (scenario.gainLoss >= 0 ? (
+                      <p class="mt-1 text-xs text-green-200/80 tabular-nums">
+                        + {currencyFmt.format(scenario.gainLoss)} ({(scenario.gainLossPercent * 100).toFixed(1)}%) zysk
+                        vs. własny kapitał
+                      </p>
+                    ) : (
+                      <p class="mt-1 text-xs text-red-300/80 tabular-nums">
+                        − {currencyFmt.format(Math.abs(scenario.gainLoss))} (
+                        {(scenario.gainLossPercent * 100).toFixed(1)}%) strata vs. własny kapitał
+                      </p>
+                    ))}
+
+                  {(scenario.id === "immediate" || scenario.id === "retirement") && scenario.gainLoss === null && (
+                    <p class="mt-1 text-xs text-blue-100/60">brak własnych wpłat — brak porównania</p>
+                  )}
+
+                  <p class="mt-2 text-xs text-blue-100/60">
+                    {scenario.id === "immediate" && (
+                      <>
+                        100% wpłat własnych + 70% wpłat pracodawcy − Belka 19% od zysku ·{" "}
+                        {currencyFmt.format(scenario.breakdown.stateForfeit)} przepada (subsydium państwa)
+                      </>
+                    )}
+                    {scenario.id === "illness" && <>25% wartości portfela, bez podatku, nie wymaga zwrotu</>}
+                    {scenario.id === "housing" && (
+                      <>
+                        100% wartości portfela, zwrot w ciągu {scenario.breakdown.repaymentYears} lat, pierwszy zakup
+                        mieszkania
+                      </>
+                    )}
+                    {scenario.id === "retirement" && (
+                      <>
+                        Domyślnie: {currencyFmt.format(scenario.breakdown.lumpSum)} jednorazowo +{" "}
+                        {currencyFmt.format(scenario.breakdown.instalmentMonthly)} miesięcznie przez{" "}
+                        {scenario.breakdown.instalmentMonths} miesięcy, bez podatku
+                      </>
+                    )}
+                  </p>
+
+                  <details class="mt-3">
+                    <summary class="cursor-pointer text-xs text-blue-100/60">Jak to działa?</summary>
+                    <div class="mt-2 text-xs text-blue-100/70">{explanation}</div>
+                  </details>
+                </article>
+              );
+            })}
+          </section>
+        )
+      }
+
       <div class="flex flex-wrap items-center gap-3">
         <form method="POST" action="/api/prices/fetch">
           <button
@@ -195,6 +332,8 @@ const cutoffDisplay = cutoffDate !== null ? new Date(cutoffDate).toLocaleDateStr
           </button>
         </form>
       </div>
+
+      <p class="mt-6 text-center text-xs text-blue-100/40">Aplikacja obsługuje wyłącznie plan Allianz PPK 2055.</p>
     </div>
   </div>
 </Layout>
