@@ -6,6 +6,7 @@ import { computeValuation } from "@/lib/valuation/compute";
 import { computeScenarios } from "@/lib/scenarios/compute";
 import { computeAvailability } from "@/lib/scenarios/availability";
 import type { ScenarioId } from "@/lib/scenarios/types";
+import type { Tables } from "@/lib/database.types";
 
 export const prerender = false;
 
@@ -22,12 +23,7 @@ let unitsSum = 0;
 let cutoffDate: string | null = null;
 let latest: { price: number | string; fetched_at: string } | null = null;
 let birthDate: string | null = null;
-interface TxRow {
-  transaction_date: string;
-  source: string;
-  units: number;
-  gross_amount: number;
-}
+type TxRow = Pick<Tables<"transactions">, "transaction_date" | "source" | "units" | "gross_amount">;
 let txRows: TxRow[] = [];
 const dbErrors: string[] = [];
 

@@ -19,7 +19,10 @@ export const POST: APIRoute = async (context) => {
   }
 
   const parsed = new Date(`${raw}T00:00:00Z`);
-  if (Number.isNaN(parsed.getTime())) {
+  // Round-trip equality catches invalid calendar dates like 2024-02-30 that
+  // JS silently rolls forward (Feb 30 → Mar 1). Postgres would also reject
+  // these, but its error string is not user-facing copy.
+  if (Number.isNaN(parsed.getTime()) || parsed.toISOString().slice(0, 10) !== raw) {
     return context.redirect(`/setup?birthError=${encodeURIComponent("Niepoprawna data")}#birth-date`, 303);
   }
 

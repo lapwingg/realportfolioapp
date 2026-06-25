@@ -9,6 +9,9 @@ import type { ScenarioAvailability } from "@/lib/scenarios/types";
 function addYearsIso(iso: string, years: number): string {
   // Pure ISO YYYY-MM-DD arithmetic — does not go through Date to avoid
   // timezone shifts on a "date" (no time, no tz) value.
+  // Leap-year edge case: a Feb-29 birth + N years where the target year
+  // is not a leap year rolls forward to Mar 1 (Date.UTC overflow semantics).
+  // Accepted as a one-day imprecision for the ~0.07% Feb-29 user population.
   const [y, m, d] = iso.split("-").map(Number);
   const next = new Date(Date.UTC(y + years, m - 1, d));
   const yy = String(next.getUTCFullYear()).padStart(4, "0");
