@@ -26,3 +26,6 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# claude code local overrides (settings.json is committed)
+.claude/settings.local.json

@@ -1,0 +1,21 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npm run lint:fix --silent",
+            "timeout": 15000
+          },
+          {
+            "type": "command",
+            "command": "npx astro check",
+            "timeout": 60000
+          }
+        ]
+      }
+    ]
+  }
+}
