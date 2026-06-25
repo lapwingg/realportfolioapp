@@ -33,7 +33,7 @@ A PPK (Pracownicze Plany Kapitałowe) account holder sees their balance displaye
 | S-01 | import-allianz-transactions     | upload Allianz file, see transactions persisted and categorised by source  | F-01          | US-01, FR-001, FR-003, FR-004, FR-005 | done     |
 | S-02 | fetch-fund-price                | fetch current fund unit price and see portfolio valuation with timestamp   | F-01          | US-01, FR-006, FR-007                 | proposed |
 | S-04 | fund-conversion-cutoff          | see a correct valuation despite the 2024-11-07 OLD→NEW fund unit conversion | S-02          | US-01, FR-007                         | preparing |
-| S-03 | withdrawal-scenarios-dashboard  | see after-tax amounts for all 3 withdrawal scenarios with gain/loss        | S-01, S-02, S-04 | US-01, FR-008, FR-009, FR-010, FR-011 | proposed |
+| S-03 | withdrawal-scenarios-dashboard  | see after-tax amounts for all 3 withdrawal scenarios with gain/loss        | S-01, S-02, S-04 | US-01, FR-008, FR-009, FR-010, FR-011 | done |
 
 ## Baseline
 
@@ -116,7 +116,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Unknowns:**
   - Authoritative source / current values for Belka tax rate, ZUS deduction rules for PPK closure, and 60+ retirement exemption rules — Owner: user. Block: no (planner researches and cites sources; the NFR requires correctness, not pre-confirmed rules — but planning can proceed and the chosen sources surface in the plan for review).
 - **Risk:** Tax calculation correctness is non-negotiable per NFR — silent rounding or estimation errors are unacceptable, so the plan must include explicit tax-parameter sources and unit tests against worked examples. Also see `context/foundation/lessons.md` on Cloudflare Workers CPU-time limits — a multi-year transaction history can blow the 10ms free-plan budget during calculation. Sequenced last because all prerequisites must be in place before the calculation surface can be exercised end-to-end with real categorised data and a current price.
-- **Status:** proposed
+- **Status:** done
 
 ## Backlog Handoff
 
@@ -147,3 +147,4 @@ Foundations below assume these are present and do NOT re-scaffold them.
 
 - **F-01: (foundation) Supabase schema migrations create user-scoped tables for transactions and price snapshots, with RLS policies enforcing "each authenticated user reads and writes only their own rows".** — Archived 2026-06-25 → `context/archive/2026-06-25-supabase-schema-rls/`. Lesson: —.
 - **S-01: A signed-in user can upload their Allianz statement file and see the resulting transactions persisted in their account, each categorised by contribution source (own / employer / state subsidy).** — Archived 2026-06-25 → `context/archive/2026-06-25-import-allianz-transactions/`. Lesson: —.
+- **S-03: A signed-in user with imported transactions and a fresh fetched price sees a single dashboard showing portfolio valuation, own invested capital, and the after-tax net amount + gain/loss vs own capital for all three withdrawal scenarios (immediate closure, 25% loan, 60+ retirement) — all visible simultaneously, not behind separate navigation.** — Archived 2026-06-25 → `context/archive/2026-06-25-withdrawal-scenarios-dashboard/`. Lesson: —.
