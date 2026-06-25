@@ -394,14 +394,14 @@ Wire the E2E suite into `.github/workflows/ci.yml` so the two risk specs run on 
 
 #### Automated
 
-- [x] 4.1 PR triggers the e2e job and it completes
-- [x] 4.2 Playwright HTML report uploaded as artifact on failure
-- [x] 4.3 `actionlint` (if used) reports no errors on the new workflow
-- [x] 4.4 Local invocation matches CI invocation exactly
+- [x] 4.1 PR triggers the e2e job and it completes — 72fc501
+- [x] 4.2 Playwright HTML report uploaded as artifact on failure — 72fc501
+- [x] 4.3 `actionlint` (if used) reports no errors on the new workflow — 72fc501
+- [x] 4.4 Local invocation matches CI invocation exactly — 72fc501
 
 #### Manual
 
-- [x] 4.5 One CI run completes with the e2e job green
-- [x] 4.6 E2e job visible in PR checks with a clear name
-- [x] 4.7 After 2 green runs, `continue-on-error` removed and an intentional failure blocks PR merge
-- [x] 4.8 README / CI doc lists all 5 required secrets
+- [x] 4.5 One CI run completes with the e2e job green — 72fc501
+- [x] 4.6 E2e job visible in PR checks with a clear name — 72fc501
+- [x] 4.7 After 2 green runs, `continue-on-error` removed and an intentional failure blocks PR merge — 72fc501
+- [x] 4.8 README / CI doc lists all 5 required secrets — 72fc501
