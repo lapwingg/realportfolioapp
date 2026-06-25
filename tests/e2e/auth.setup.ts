@@ -16,8 +16,10 @@ setup("authenticate", async ({ page }) => {
 
   await page.goto("/auth/signin");
 
-  await page.getByLabel("Email").fill(EMAIL);
-  await page.getByLabel("Password").fill(PASSWORD);
+  // Use role=textbox to disambiguate from the "Show password" toggle button,
+  // which has aria-label="Show password" and would otherwise match getByLabel.
+  await page.getByRole("textbox", { name: "Email" }).fill(EMAIL);
+  await page.getByRole("textbox", { name: "Password" }).fill(PASSWORD);
   await page.getByRole("button", { name: "Sign in" }).click();
 
   await page.waitForURL("**/dashboard", { timeout: 10_000 });
