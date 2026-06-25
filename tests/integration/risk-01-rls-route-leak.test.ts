@@ -30,28 +30,16 @@
 // `auth.uid() = user_id` to `true` (or drop the policy). Re-run.
 // Expectation: PRICE_PROMPT_MARKER absence assertion fires.
 
-import { readFile } from "node:fs/promises";
 import { describe, it, expect } from "vitest";
+import { EMPTY_STATE_MARKER, PRICE_PROMPT_MARKER } from "../../src/lib/dashboard/markers";
 import { fetchRoute } from "./_helpers/server";
-import { createSignedInUser, countOwnTransactions, type TestUser } from "./_helpers/session";
-
-const EMPTY_STATE_MARKER = "zaimportuj plik transakcji";
-const PRICE_PROMPT_MARKER = "Pobierz cenę, aby zobaczyć wycenę portfela.";
-
-async function seedTransactionsAs(user: TestUser): Promise<void> {
-  const csv = await readFile("tests/fixtures/allianz-sample.csv", "utf8");
-  const form = new FormData();
-  form.append("file", new Blob([csv], { type: "text/csv" }), "allianz.csv");
-  const res = await fetchRoute("/api/transactions/import", { method: "POST", body: form, cookie: user.cookie });
-  if (![301, 302, 303].includes(res.status)) {
-    throw new Error(`seed via /api/transactions/import failed for ${user.email}: status ${String(res.status)}`);
-  }
-}
+import { createSignedInUser, countOwnTransactions } from "./_helpers/session";
+import { seedTransactionsAs } from "../_helpers/seed";
 
 describe("Risk #1 — RLS leak at the route layer", () => {
   it("user A with no own rows sees the empty state and never B's leak markers", async () => {
     const [userA, userB] = await Promise.all([createSignedInUser(), createSignedInUser()]);
-    await seedTransactionsAs(userB);
+    await seedTransactionsAs(userB, "tests/fixtures/allianz-sample.csv");
 
     // Preconditions — without these, the test could silent-pass on a broken
     // seed (B has 0 rows → A trivially sees empty state, regardless of RLS).
