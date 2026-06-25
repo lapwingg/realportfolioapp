@@ -202,6 +202,18 @@ The parser and categoriser are pure modules under `src/lib/allianz/`. A committe
 
 **Heuristic caveat**: the categoriser assumes default PPK rates of employee 2% / employer 1.5%. If your rates differ, the per-source split shown in the post-import counts banner will be wrong — re-import after we add explicit rate config in a later slice.
 
+## Pobieranie cen (fetching fund prices)
+
+Signed-in users land on `/dashboard` and click **Pobierz cenę** to fetch the current unit price for fund `ALL88` (`Allianz Plan Emerytalny 2055`) from `https://www.analizy.pl/fundusze-ppk/ALL88/allianz-plan-emerytalny-2055`. The server fetches the page with an explicit `User-Agent` and an 8-second timeout, parses the visible unit-price node (`.productValueSumUp .productBigText`), and writes a row into `price_snapshots` under RLS — or skips the insert if the new price equals the latest stored one (dedup, signalled by `?dedup=1` and a "Cena bez zmian od ostatniego pobrania" note in the UI).
+
+The fetch is **on-demand only** — there is no scheduled refresh, no background job, and no auto-fetch on dashboard load. A user with no snapshots sees the red "Pobierz cenę, aby zobaczyć wycenę portfela." banner and clicks the button.
+
+Failures (network error, timeout, non-2xx, or selector miss) redirect to `/dashboard?priceError=<reason>`. A generic Polish banner ("Pobieranie nie powiodło się. Spróbuj ponownie.") is shown, with the raw error tucked inside a collapsible `<details>` "Szczegóły" element. If a prior snapshot exists, it is shown under an amber-bordered block with an explicit `Pobrano N dni/godz./min temu` age — honoring FR-007 (never display a stale price as current).
+
+The parser is a pure module at `src/lib/analizy/parse.ts`. A committed fixture lives at `tests/fixtures/analizy-sample.html`; run `npm run verify-price-parser` to exercise the Polish-decimal-comma normalization and the fixture happy path against a recorded reference price.
+
+**Single-fund approximation (MVP caveat)**: the dashboard valuation is computed as `SUM(transactions.units) × ALL88 unit price`. This is mathematically exact for users fully invested in a single fund (which matches the current user, who is fully switched out of `Allianz PPK 2055` into `Allianz Plan Emerytalny 2055`). For a user still split across multiple funds, the number would be inaccurate — a future slice would need to extend `transactions` with a per-row fund identifier and the price-fetch route with a per-ticker lookup. The PRD §Non-Goals explicitly defers multi-fund support to v2.
+
 ## Deployment
 
 This project deploys to [Cloudflare Workers](https://workers.cloudflare.com/).

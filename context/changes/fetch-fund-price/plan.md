@@ -413,34 +413,34 @@ No schema migration. The reused `price_snapshots` table is empty in production (
 
 #### Automated
 
-- [x] 2.1 `npm run lint` passes
-- [x] 2.2 `npm run build` passes
-- [x] 2.3 Signed-out POST to `/api/prices/fetch` returns 302/303 to `/auth/signin`
+- [x] 2.1 `npm run lint` passes — d0bf032
+- [x] 2.2 `npm run build` passes — d0bf032
+- [x] 2.3 Signed-out POST to `/api/prices/fetch` returns 302/303 to `/auth/signin` — d0bf032
 
 #### Manual
 
-- [ ] 2.4 Signed-in POST reaches `/dashboard?priced=1` (or `?priced=1&dedup=1`) via 303
-- [ ] 2.5 Successful fetch writes exactly one `price_snapshots` row with `ticker = 'ALL88'`, sensible `price`, `fetched_at` = "just now"
-- [ ] 2.6 Second click within seconds does NOT add another row (dedup verified at the DB)
-- [ ] 2.7 Breaking `ANALIZY_URL` to `example.invalid` yields `?priceError=...` and inserts no row
-- [ ] 2.8 Breaking `PRICE_SELECTOR` to `#nonexistent` yields `?priceError=Selector matched no element...` and inserts no row
-- [ ] 2.9 Two-user RLS spot check: user B cannot see user A's snapshot via Studio impersonation
+- [x] 2.4 Signed-in POST reaches `/dashboard?priced=1` (or `?priced=1&dedup=1`) via 303
+- [x] 2.5 Successful fetch writes exactly one `price_snapshots` row with `ticker = 'ALL88'`, sensible `price`, `fetched_at` = "just now"
+- [x] 2.6 Second click within seconds does NOT add another row (dedup verified at the DB)
+- [x] 2.7 Breaking `ANALIZY_URL` to `example.invalid` yields `?priceError=...` and inserts no row
+- [x] 2.8 Breaking `PRICE_SELECTOR` to `#nonexistent` yields `?priceError=Selector matched no element...` and inserts no row
+- [x] 2.9 Two-user RLS spot check: user B cannot see user A's snapshot via Studio impersonation
 
 ### Phase 3: Dashboard valuation block + Pobierz cenę button + README
 
 #### Automated
 
-- [ ] 3.1 `npm run lint` passes
-- [ ] 3.2 `npm run build` passes
-- [ ] 3.3 Signed-out request to `/dashboard` redirects to `/auth/signin`
+- [x] 3.1 `npm run lint` passes
+- [x] 3.2 `npm run build` passes
+- [x] 3.3 Signed-out request to `/dashboard` redirects to `/auth/signin`
 
 #### Manual
 
-- [ ] 3.4 Fresh state: click Pobierz cenę → total PLN + `{units} szt. × {price} PLN` + ticker line + "Pobrano przed chwilą"
-- [ ] 3.5 Dedup state: second click → "Cena bez zmian od ostatniego pobrania" note; no new row in Studio
-- [ ] 3.6 Stale state: forced fetch failure → amber-bordered valuation + prior price + honest "Pobrano N dni/godzin temu" + generic Polish banner + raw error in `<details>`
-- [ ] 3.7 No-price state: empty `price_snapshots` → red "Pobierz cenę..." banner; no valuation block
-- [ ] 3.8 No-transactions state: empty `transactions` → "Najpierw zaimportuj plik transakcji" hint linking `/setup`
-- [ ] 3.9 Error `<details>` "Szczegóły" disclosure shows the raw decoded `priceError` string verbatim
-- [ ] 3.10 Two-user end-to-end: user B sees the no-transactions hint, not user A's valuation or snapshot data
-- [ ] 3.11 Every new user-visible string on `/dashboard` is in Polish (banners, "szt.", "Pobrano", "Cena bez zmian...", "Pobierz cenę", "Szczegóły", "Najpierw zaimportuj...")
+- [x] 3.4 Fresh state: click Pobierz cenę → total PLN + `{units} szt. × {price} PLN` + ticker line + "Pobrano przed chwilą"
+- [x] 3.5 Dedup state: second click → "Cena bez zmian od ostatniego pobrania" note; no new row in Studio
+- [x] 3.6 Stale state: forced fetch failure → amber-bordered valuation + prior price + honest "Pobrano N dni/godzin temu" + generic Polish banner + raw error in `<details>`
+- [x] 3.7 No-price state: empty `price_snapshots` → red "Pobierz cenę..." banner; no valuation block
+- [x] 3.8 No-transactions state: empty `transactions` → "Najpierw zaimportuj plik transakcji" hint linking `/setup`
+- [x] 3.9 Error `<details>` "Szczegóły" disclosure shows the raw decoded `priceError` string verbatim
+- [x] 3.10 Two-user end-to-end: user B sees the no-transactions hint, not user A's valuation or snapshot data
+- [x] 3.11 Every new user-visible string on `/dashboard` is in Polish (banners, "szt.", "Pobrano", "Cena bez zmian...", "Pobierz cenę", "Szczegóły", "Najpierw zaimportuj...")

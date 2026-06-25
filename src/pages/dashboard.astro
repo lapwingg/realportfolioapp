@@ -1,35 +1,190 @@
 ---
 import Layout from "@/layouts/Layout.astro";
+import { createClient } from "@/lib/supabase";
+import { TICKER, FUND_LABEL } from "@/lib/analizy/types";
+
+export const prerender = false;
 
 const { user } = Astro.locals;
+
+const params = Astro.url.searchParams;
+const priced = params.get("priced");
+const dedup = params.get("dedup");
+const priceError = params.get("priceError");
+
+const supabase = createClient(Astro.request.headers, Astro.cookies);
+
+let unitsSum = 0;
+let latest: { price: number | string; fetched_at: string } | null = null;
+const dbErrors: string[] = [];
+
+if (supabase) {
+  const txResult = await supabase.from("transactions").select("units");
+  if (txResult.error) {
+    dbErrors.push(txResult.error.message);
+  } else {
+    unitsSum = txResult.data.reduce((acc, row) => acc + parseFloat(String(row.units)), 0);
+  }
+
+  const snResult = await supabase
+    .from("price_snapshots")
+    .select("price, fetched_at")
+    .eq("ticker", TICKER)
+    .order("fetched_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (snResult.error) {
+    dbErrors.push(snResult.error.message);
+  } else {
+    latest = snResult.data;
+  }
+}
+
+const dbError = dbErrors.length > 0 ? dbErrors.join("; ") : null;
+const latestPrice = latest !== null ? parseFloat(String(latest.price)) : null;
+const fetchedAtDate = latest !== null ? new Date(latest.fetched_at) : null;
+const valuation = latestPrice !== null && unitsSum > 0 ? latestPrice * unitsSum : null;
+
+// State derivation order: no_transactions wins over no_price (a user with no imports
+// sees the import hint, not the price prompt, regardless of snapshot presence).
+type RenderState = "fresh" | "stale" | "no_price" | "no_transactions" | "idle";
+let state: RenderState;
+if (unitsSum === 0) {
+  state = "no_transactions";
+} else if (latest === null) {
+  state = "no_price";
+} else if (priceError !== null) {
+  state = "stale";
+} else if (priced === "1") {
+  state = "fresh";
+} else {
+  state = "idle";
+}
+
+const currencyFmt = new Intl.NumberFormat("pl-PL", { style: "currency", currency: "PLN" });
+const unitsFmt = new Intl.NumberFormat("pl-PL", {
+  minimumFractionDigits: 4,
+  maximumFractionDigits: 4,
+});
+const priceFmt = new Intl.NumberFormat("pl-PL", {
+  minimumFractionDigits: 4,
+  maximumFractionDigits: 4,
+});
+
+// Conservative Polish relative-time helper. Uses abbreviated forms (min / godz. / dni)
+// to sidestep Polish plural complexity (1 minuta vs 2-4 minuty vs 5+ minut, etc.).
+function relativeTimePl(fetchedAt: Date): string {
+  const diffMs = Date.now() - fetchedAt.getTime();
+  const diffSec = Math.floor(diffMs / 1000);
+  if (diffSec < 60) return "przed chwilą";
+  const diffMin = Math.floor(diffSec / 60);
+  if (diffMin < 60) return `${String(diffMin)} min temu`;
+  const diffHr = Math.floor(diffMin / 60);
+  if (diffHr < 24) return `${String(diffHr)} godz. temu`;
+  const diffDay = Math.floor(diffHr / 24);
+  return `${String(diffDay)} dni temu`;
+}
+
+const relTime = fetchedAtDate !== null ? relativeTimePl(fetchedAtDate) : null;
+const absTime = fetchedAtDate !== null ? fetchedAtDate.toLocaleString("pl-PL") : null;
 ---
 
 <Layout title="Dashboard">
-  <div class="bg-cosmic flex min-h-screen items-center justify-center p-4">
-    <div class="rounded-2xl border border-white/10 bg-white/10 p-8 text-center text-white backdrop-blur-xl">
-      <h1 class="mb-4 bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-3xl font-bold text-transparent">
+  <div class="bg-cosmic flex min-h-screen items-start justify-center p-4 pt-12">
+    <div class="w-full max-w-xl rounded-2xl border border-white/10 bg-white/10 p-8 text-white backdrop-blur-xl">
+      <h1 class="mb-2 bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-3xl font-bold text-transparent">
         Dashboard
       </h1>
-      <p class="text-blue-100/80">
-        Welcome, <span class="font-semibold text-white">{user?.email}</span>
+      <p class="mb-6 text-sm text-blue-100/70">
+        Witaj, <span class="font-semibold text-white">{user?.email}</span>
       </p>
-      <p class="mt-2 text-sm text-blue-100/50">This page is only for authenticated users.</p>
-      <p class="mt-6">
+
+      {
+        dbError && (
+          <div class="mb-4 rounded-lg border border-red-400/40 bg-red-500/10 px-4 py-3 text-sm text-red-100">
+            Błąd bazy danych: {dbError}
+          </div>
+        )
+      }
+
+      {
+        priceError !== null && (
+          <div class="mb-4 rounded-lg border border-amber-400/40 bg-amber-500/10 px-4 py-3 text-sm text-amber-100">
+            <p>Pobieranie nie powiodło się. Spróbuj ponownie.</p>
+            <details class="mt-2">
+              <summary class="cursor-pointer text-xs text-blue-100/60">Szczegóły</summary>
+              <pre class="mt-2 text-xs break-words whitespace-pre-wrap text-amber-100/80">{priceError}</pre>
+            </details>
+          </div>
+        )
+      }
+
+      {
+        state === "no_transactions" && (
+          <div class="mb-6 rounded-lg border border-amber-400/40 bg-amber-500/10 px-4 py-3 text-sm text-amber-100">
+            Najpierw{" "}
+            <a href="/setup" class="underline">
+              zaimportuj plik transakcji
+            </a>
+            .
+          </div>
+        )
+      }
+
+      {
+        state === "no_price" && (
+          <div class="mb-6 rounded-lg border border-red-400/40 bg-red-500/10 px-4 py-3 text-sm text-red-100">
+            Pobierz cenę, aby zobaczyć wycenę portfela.
+          </div>
+        )
+      }
+
+      {
+        valuation !== null && latestPrice !== null && (
+          <section
+            class:list={`mb-6 rounded-xl border p-5 ${state === "stale" ? "border-amber-400/40" : "border-white/10"}`}
+          >
+            <p class="text-3xl font-bold tabular-nums">{currencyFmt.format(valuation)}</p>
+            <p class="mt-1 text-sm text-blue-100/70 tabular-nums">
+              {unitsFmt.format(unitsSum)} szt. × {priceFmt.format(latestPrice)} PLN
+            </p>
+            <p class="mt-1 text-xs text-blue-100/50">
+              {TICKER} · {FUND_LABEL}
+            </p>
+            <p class="mt-3 text-xs text-blue-100/60">
+              Pobrano {relTime} <span class="text-blue-100/40">({absTime})</span>
+              {state === "fresh" && dedup === "1" && (
+                <span class="ml-2 text-blue-100/40">· Cena bez zmian od ostatniego pobrania.</span>
+              )}
+            </p>
+          </section>
+        )
+      }
+
+      <div class="flex flex-wrap items-center gap-3">
+        <form method="POST" action="/api/prices/fetch">
+          <button
+            type="submit"
+            class="rounded-lg border border-white/20 bg-white/10 px-4 py-2 text-sm transition-colors hover:bg-white/20"
+          >
+            Pobierz cenę
+          </button>
+        </form>
         <a
           href="/setup"
           class="inline-block rounded-lg border border-white/20 bg-white/10 px-4 py-2 text-sm transition-colors hover:bg-white/20"
         >
-          Import statement
+          Importuj plik transakcji
         </a>
-      </p>
-      <form method="POST" action="/api/auth/signout" class="mt-6">
-        <button
-          type="submit"
-          class="rounded-lg border border-white/20 bg-white/10 px-4 py-2 text-sm transition-colors hover:bg-white/20"
-        >
-          Sign out
-        </button>
-      </form>
+        <form method="POST" action="/api/auth/signout" class="ml-auto">
+          <button
+            type="submit"
+            class="rounded-lg border border-white/20 bg-white/10 px-4 py-2 text-sm transition-colors hover:bg-white/20"
+          >
+            Wyloguj się
+          </button>
+        </form>
+      </div>
     </div>
   </div>
 </Layout>
