@@ -480,30 +480,30 @@ Fill in the §6.1 and §6.2 placeholders in `context/foundation/test-plan.md` wi
 
 #### Automated
 
-- [x] 3.1 `npm run test:integration` exits 0 with 6 or 7 passing tests covering smoke + Risk #1 + #3 + #7
-- [x] 3.2 Three consecutive `npm run test:integration` runs pass without manual reset
-- [x] 3.3 `npm test` and `npm run lint` still exit 0
+- [x] 3.1 `npm run test:integration` exits 0 with 6 or 7 passing tests covering smoke + Risk #1 + #3 + #7 — a129143
+- [x] 3.2 Three consecutive `npm run test:integration` runs pass without manual reset — a129143
+- [x] 3.3 `npm test` and `npm run lint` still exit 0 — a129143
 
 #### Manual
 
-- [x] 3.4 Mutation drill — weakened RLS policy fails Risk #1 test; revert restores green
-- [x] 3.5 Mutation drill — `insert` (no `onConflict`) fails Risk #3 byte-identical test; revert restores green
-- [x] 3.6 Mutation drill — `import.ts` reading `user_id` from form fails Risk #7 test; revert restores green
+- [x] 3.4 Mutation drill — weakened RLS policy fails Risk #1 test; revert restores green — a129143
+- [x] 3.5 Mutation drill — `insert` (no `onConflict`) fails Risk #3 byte-identical test; revert restores green — a129143
+- [x] 3.6 Mutation drill — `import.ts` reading `user_id` from form fails Risk #7 test; revert restores green — a129143
 
 ### Phase 4: CI wiring + required gate
 
 #### Automated
 
-- [ ] 4.1 PR to `master` shows green `lint → build → supabase start → npm test → npm run test:integration → supabase test db`
-- [ ] 4.2 Deliberately weakened RLS policy turns `supabase test db` red on PR
-- [ ] 4.3 Deliberately removed `onConflict` turns `npm run test:integration` red on PR
-- [ ] 4.4 `deploy` job only runs on push to `master` after `ci` is green
-- [ ] 4.5 Total CI wall-clock under 5 minutes on cold runner
+- [x] 4.1 PR to `master` shows green `lint → build → supabase start → npm test → npm run test:integration → supabase test db`
+- [x] 4.2 Deliberately weakened RLS policy turns `supabase test db` red on PR
+- [x] 4.3 Deliberately removed `onConflict` turns `npm run test:integration` red on PR
+- [x] 4.4 `deploy` job only runs on push to `master` after `ci` is green
+- [x] 4.5 Total CI wall-clock under 5 minutes on cold runner
 
 #### Manual
 
-- [ ] 4.6 GitHub branch protection picks up new required checks (or documented as blocking by convention if not configured)
-- [ ] 4.7 Supabase logs are accessible in runner output when a test fails
+- [x] 4.6 GitHub branch protection picks up new required checks (or documented as blocking by convention if not configured)
+- [x] 4.7 Supabase logs are accessible in runner output when a test fails
 
 ### Phase 5: Update test-plan cookbook + close Phase 1 row
 

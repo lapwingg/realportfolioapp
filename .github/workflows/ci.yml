@@ -22,6 +22,36 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
 
+      # --- Test phase (added in context/changes/testing-bootstrap-critical-path) ---
+      # See context/foundation/test-plan.md §5: required gate after §3 Phase 1.
+
+      - name: Install Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Start local Supabase stack
+        run: supabase start
+        # Applies all migrations in supabase/migrations/.
+        # Cold-pull takes 60-90s on a fresh runner.
+
+      - name: Unit tests
+        run: npm test
+
+      - name: Integration tests
+        run: npm run test:integration
+        # globalSetup reads `supabase status` for URL/keys, reuses the build
+        # from the earlier step, then boots `wrangler dev` for the test run.
+
+      - name: DB-layer pgTAP regression
+        run: supabase test db
+        # Runs supabase/tests/rls_isolation.test.sql. Last so it owns the DB
+        # state during its assertions.
+
+      - name: Stop Supabase
+        if: always()
+        run: supabase stop --no-backup
+
   deploy:
     needs: ci
     runs-on: ubuntu-latest
