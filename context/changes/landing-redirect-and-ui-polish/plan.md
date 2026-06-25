@@ -404,11 +404,11 @@ Brak Chromatic/Percy w projekcie. Visual diff manualny przed/po każdej fazie �
 
 #### Automated
 
-- [x] 1.1 `npm run lint` clean
-- [x] 1.2 `npm run build` green
-- [x] 1.3 `grep -rn "Welcome\|Topbar" src/` zwraca zero matches
-- [x] 1.4 `grep -n 'lang="en"' src/layouts/Layout.astro` zwraca zero matches
-- [x] 1.5 `grep -n "10x Astro Starter" src/layouts/Layout.astro` zwraca zero matches
+- [x] 1.1 `npm run lint` clean — 7441d9e
+- [x] 1.2 `npm run build` green — 7441d9e
+- [x] 1.3 `grep -rn "Welcome\|Topbar" src/` zwraca zero matches — 7441d9e
+- [x] 1.4 `grep -n 'lang="en"' src/layouts/Layout.astro` zwraca zero matches — 7441d9e
+- [x] 1.5 `grep -n "10x Astro Starter" src/layouts/Layout.astro` zwraca zero matches — 7441d9e
 
 #### Manual
 
@@ -420,9 +420,9 @@ Brak Chromatic/Percy w projekcie. Visual diff manualny przed/po każdej fazie �
 
 #### Automated
 
-- [ ] 2.1 `npm run build` green (astro-icon buduje pod Cloudflare adapter)
-- [ ] 2.2 `npm run lint` clean
-- [ ] 2.3 W zbudowanym HTML `/auth/signin` widać inline SVG przy bulletach AppIntro
+- [x] 2.1 `npm run build` green (astro-icon buduje pod Cloudflare adapter)
+- [x] 2.2 `npm run lint` clean
+- [x] 2.3 W zbudowanym HTML `/auth/signin` widać inline SVG przy bulletach AppIntro
 
 #### Manual
 

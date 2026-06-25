@@ -43,7 +43,9 @@
   "devDependencies": {
     "@eslint/compat": "^2.0.3",
     "@eslint/js": "^9.29.0",
+    "@iconify-json/lucide": "^1.2.114",
     "@types/papaparse": "^5.5.2",
+    "astro-icon": "^1.1.5",
     "eslint": "^9.29.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-astro": "^1.7.0",

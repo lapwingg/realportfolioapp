@@ -2,6 +2,7 @@
 // Shared app-description block rendered on /auth/signin and /auth/signup.
 // Pure markup, no props — single source of truth for the "what is this app"
 // copy so first-time visitors understand the value before authenticating.
+import { Icon } from "astro-icon/components";
 ---
 
 <section class="mb-6 border-b border-white/10 pb-5">
@@ -10,11 +11,23 @@
     Aplikacja pobiera Twoją historię wpłat z Allianz oraz aktualną cenę jednostki funduszu i pokazuje, ile naprawdę
     dostaniesz w czterech scenariuszach wypłaty — z uwzględnieniem podatku Belki, składek ZUS oraz reguł PPK.
   </p>
-  <ul class="mb-3 list-inside list-disc space-y-1 text-xs text-blue-100/70">
-    <li>Zamknięcie konta (zwrot przed 60. rokiem życia)</li>
-    <li>Wypłata 25% w przypadku poważnego zachorowania</li>
-    <li>Pożyczka 100% na cele mieszkaniowe (do 45. roku życia)</li>
-    <li>Wypłata po osiągnięciu 60. roku życia</li>
+  <ul class="mb-3 space-y-1.5 text-xs text-blue-100/70">
+    <li class="flex items-start gap-2">
+      <Icon name="lucide:log-out" class="mt-0.5 h-3.5 w-3.5 flex-none text-blue-200/80" />
+      <span>Zamknięcie konta (zwrot przed 60. rokiem życia)</span>
+    </li>
+    <li class="flex items-start gap-2">
+      <Icon name="lucide:heart-pulse" class="mt-0.5 h-3.5 w-3.5 flex-none text-blue-200/80" />
+      <span>Wypłata 25% w przypadku poważnego zachorowania</span>
+    </li>
+    <li class="flex items-start gap-2">
+      <Icon name="lucide:home" class="mt-0.5 h-3.5 w-3.5 flex-none text-blue-200/80" />
+      <span>Pożyczka 100% na cele mieszkaniowe (do 45. roku życia)</span>
+    </li>
+    <li class="flex items-start gap-2">
+      <Icon name="lucide:hourglass" class="mt-0.5 h-3.5 w-3.5 flex-none text-blue-200/80" />
+      <span>Wypłata po osiągnięciu 60. roku życia</span>
+    </li>
   </ul>
   <p class="text-xs text-blue-100/50">Wspiera wyłącznie plan Allianz PPK 2055.</p>
 </section>
