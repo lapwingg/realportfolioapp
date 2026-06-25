@@ -1,7 +1,7 @@
 ---
 change_id: fetch-fund-price
 title: Fetch PPK fund unit price from analizy.pl and show portfolio valuation
-status: implementing
+status: implemented
 created: 2026-06-25
 updated: 2026-06-25
 archived_at: null
