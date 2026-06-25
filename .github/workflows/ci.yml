@@ -43,6 +43,45 @@ jobs:
         # from the earlier step, then boots `wrangler dev` for the test run.
         run: npm run test:integration
 
+      # --- E2E (Playwright) — added in context/changes/e2e-rls-and-auth-smoke ---
+      # See context/foundation/test-plan.md §3 Phase 4 + §5. Runs after the
+      # integration suite (same wrangler-dev infra reused via playwright.config.ts
+      # webServer). Initially continue-on-error: true; flip to required after
+      # 2 green runs (test-plan §5).
+
+      - name: Install Playwright browsers
+        if: ${{ !cancelled() }}
+        run: npx playwright install --with-deps chromium
+
+      - name: Seed primary E2E account
+        if: ${{ !cancelled() }}
+        run: npm run seed:e2e
+        env:
+          E2E_TEST_EMAIL: ${{ secrets.E2E_TEST_EMAIL }}
+          E2E_TEST_PASSWORD: ${{ secrets.E2E_TEST_PASSWORD }}
+          SUPABASE_URL: http://127.0.0.1:54321
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY_LOCAL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY_LOCAL }}
+
+      - name: E2E tests
+        if: ${{ !cancelled() }}
+        continue-on-error: true
+        run: npm run test:e2e
+        env:
+          E2E_TEST_EMAIL: ${{ secrets.E2E_TEST_EMAIL }}
+          E2E_TEST_PASSWORD: ${{ secrets.E2E_TEST_PASSWORD }}
+          SUPABASE_URL: http://127.0.0.1:54321
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY_LOCAL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY_LOCAL }}
+
+      - name: Upload Playwright report on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
+
       - name: DB-layer pgTAP regression
         if: ${{ !cancelled() }}
         # Runs supabase/tests/rls_isolation.test.sql. Last so it owns the DB

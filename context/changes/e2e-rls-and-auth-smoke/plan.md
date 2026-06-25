@@ -378,30 +378,30 @@ Wire the E2E suite into `.github/workflows/ci.yml` so the two risk specs run on 
 
 #### Automated
 
-- [x] 3.1 `npm run seed:e2e` exits 0 on a clean primary account
-- [x] 3.2 `npm run seed:e2e && npm run test:e2e -- risk-04-cross-cutoff-valuation.spec.ts` exits 0
-- [x] 3.3 `npm run lint` passes
-- [x] 3.4 Re-running `npm run seed:e2e` is idempotent (DB state unchanged)
-- [x] 3.5 Spec does NOT import from `src/lib/valuation/compute.ts` (grep guard — oracle independence)
+- [x] 3.1 `npm run seed:e2e` exits 0 on a clean primary account — 2a26790
+- [x] 3.2 `npm run seed:e2e && npm run test:e2e -- risk-04-cross-cutoff-valuation.spec.ts` exits 0 — 2a26790
+- [x] 3.3 `npm run lint` passes — 2a26790
+- [x] 3.4 Re-running `npm run seed:e2e` is idempotent (DB state unchanged) — 2a26790
+- [x] 3.5 Spec does NOT import from `src/lib/valuation/compute.ts` (grep guard — oracle independence) — 2a26790
 
 #### Manual
 
-- [x] 3.6 Naive-SUM mutation drill: spec fails on `toHaveText` assertion
-- [x] 3.7 Expected PLN value confirmed hand-computed from the Phase 2 worked example (not lifted from `computeValuation` output)
-- [x] 3.8 Dashboard visually renders the asserted numbers post-seed
+- [x] 3.6 Naive-SUM mutation drill: spec fails on `toHaveText` assertion — 2a26790
+- [x] 3.7 Expected PLN value confirmed hand-computed from the Phase 2 worked example (not lifted from `computeValuation` output) — 2a26790
+- [x] 3.8 Dashboard visually renders the asserted numbers post-seed — 2a26790
 
 ### Phase 4: CI gating
 
 #### Automated
 
-- [ ] 4.1 PR triggers the e2e job and it completes
-- [ ] 4.2 Playwright HTML report uploaded as artifact on failure
-- [ ] 4.3 `actionlint` (if used) reports no errors on the new workflow
-- [ ] 4.4 Local invocation matches CI invocation exactly
+- [x] 4.1 PR triggers the e2e job and it completes
+- [x] 4.2 Playwright HTML report uploaded as artifact on failure
+- [x] 4.3 `actionlint` (if used) reports no errors on the new workflow
+- [x] 4.4 Local invocation matches CI invocation exactly
 
 #### Manual
 
-- [ ] 4.5 One CI run completes with the e2e job green
-- [ ] 4.6 E2e job visible in PR checks with a clear name
-- [ ] 4.7 After 2 green runs, `continue-on-error` removed and an intentional failure blocks PR merge
-- [ ] 4.8 README / CI doc lists all 5 required secrets
+- [x] 4.5 One CI run completes with the e2e job green
+- [x] 4.6 E2e job visible in PR checks with a clear name
+- [x] 4.7 After 2 green runs, `continue-on-error` removed and an intentional failure blocks PR merge
+- [x] 4.8 README / CI doc lists all 5 required secrets

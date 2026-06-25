@@ -272,6 +272,23 @@ Set `SUPABASE_URL` and `SUPABASE_KEY` as secrets in your Cloudflare dashboard or
 
 GitHub Actions runs lint + build on every push and PR to `master`. Configure `SUPABASE_URL` and `SUPABASE_KEY` as repository secrets in GitHub for the build step.
 
+### CI secrets
+
+The CI workflow (`.github/workflows/ci.yml`) expects these repository secrets:
+
+- `SUPABASE_URL` — production / hosted Supabase URL (used by build step).
+- `SUPABASE_KEY` — production / hosted Supabase anon key (used by build step).
+- `CLOUDFLARE_API_TOKEN` — required only by the `deploy` job.
+
+E2E (Playwright) job adds:
+
+- `E2E_TEST_EMAIL` — dedicated test account email (NOT a personal Supabase user).
+- `E2E_TEST_PASSWORD` — dedicated test account password.
+- `SUPABASE_KEY_LOCAL` — anon key for the in-CI local Supabase stack (`npx supabase start`). Same value the stack prints on a fresh checkout — pinned because `supabase start` keys are stable per Supabase CLI version.
+- `SUPABASE_SERVICE_ROLE_KEY_LOCAL` — service-role key for the in-CI local stack, used by the E2E admin helpers and `scripts/seed-e2e-primary.ts`. NEVER reuse production service-role keys here.
+
+See `scripts/seed-e2e-primary.ts` and `context/foundation/test-plan.md` for context.
+
 ## License
 
 MIT
