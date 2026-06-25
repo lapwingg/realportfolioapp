@@ -11,6 +11,9 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "deploy": "astro build && wrangler deploy",
+    "test": "vitest run --project unit",
+    "test:integration": "vitest run --project integration",
+    "test:all": "vitest run",
     "verify-parser": "tsx scripts/verify-parser.ts",
     "verify-price-parser": "tsx scripts/verify-price-parser.ts",
     "verify-scenarios": "tsx scripts/verify-scenarios.ts",
@@ -63,6 +66,7 @@
     "tsx": "^4.22.4",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.59.2",
+    "vitest": "^4.1.9",
     "wrangler": "^4.104.0"
   },
   "overrides": {
