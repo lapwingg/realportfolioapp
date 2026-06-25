@@ -1,10 +1,10 @@
 ---
 change_id: import-allianz-transactions
 title: Import Allianz transactions and categorise by contribution source
-status: implemented
+status: archived
 created: 2026-06-25
 updated: 2026-06-25
-archived_at: null
+archived_at: 2026-06-25T13:01:12Z
 ---
 
 ## Notes

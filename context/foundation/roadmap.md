@@ -30,7 +30,7 @@ A PPK (Pracownicze Plany Kapitałowe) account holder sees their balance displaye
 | ID   | Change ID                       | Outcome (user can …)                                                       | Prerequisites | PRD refs                              | Status   |
 | ---- | ------------------------------- | -------------------------------------------------------------------------- | ------------- | ------------------------------------- | -------- |
 | F-01 | supabase-schema-rls             | (foundation) user-scoped tables for transactions + price snapshots with RLS | —             | Access Control, NFR (data isolation)  | done     |
-| S-01 | import-allianz-transactions     | upload Allianz file, see transactions persisted and categorised by source  | F-01          | US-01, FR-001, FR-003, FR-004, FR-005 | proposed |
+| S-01 | import-allianz-transactions     | upload Allianz file, see transactions persisted and categorised by source  | F-01          | US-01, FR-001, FR-003, FR-004, FR-005 | done     |
 | S-02 | fetch-fund-price                | fetch current fund unit price and see portfolio valuation with timestamp   | F-01          | US-01, FR-006, FR-007                 | proposed |
 | S-03 | withdrawal-scenarios-dashboard  | see after-tax amounts for all 3 withdrawal scenarios with gain/loss        | S-01, S-02    | US-01, FR-008, FR-009, FR-010, FR-011 | proposed |
 
@@ -75,7 +75,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
   - Exact Allianz export file format (CSV / XLSX / PDF? column names? which field distinguishes own vs employer vs state contributions?) — Owner: user. Block: no (planner inspects a real sample file at `/10x-plan` time).
   - Deduplication strategy on re-upload — reject the duplicate file, or merge new rows and skip overlap? — Owner: user. Block: no (decided at plan time).
 - **Risk:** Real Allianz files may vary across years or holder profiles; per FR-003 Socrates note, the parser must surface a clear error on failure rather than silently persisting partial or corrupt data. Sequenced before S-03 because the tax calculations consume categorised transactions.
-- **Status:** proposed
+- **Status:** done
 
 ### S-02: Fetch current fund unit price and show portfolio valuation
 
@@ -130,3 +130,4 @@ Foundations below assume these are present and do NOT re-scaffold them.
 (Empty. `/10x-archive` will flip an item's `Status` to `done` and append an entry here when a change whose `Change ID` matches a roadmap item is archived. Do not pre-populate.)
 
 - **F-01: (foundation) Supabase schema migrations create user-scoped tables for transactions and price snapshots, with RLS policies enforcing "each authenticated user reads and writes only their own rows".** — Archived 2026-06-25 → `context/archive/2026-06-25-supabase-schema-rls/`. Lesson: —.
+- **S-01: A signed-in user can upload their Allianz statement file and see the resulting transactions persisted in their account, each categorised by contribution source (own / employer / state subsidy).** — Archived 2026-06-25 → `context/archive/2026-06-25-import-allianz-transactions/`. Lesson: —.
