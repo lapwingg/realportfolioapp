@@ -1,0 +1,9 @@
+Data zlecenia;Numer zlecenia;Data wyceny;Typ zlecenia;Typ;Wartość zlecenia;Wartość PLN (transakcji);Liczba jednostek (fundusz źródłowy);Liczba jednostek (fundusz docelowy);Fundusz źródłowy;Fundusz docelowy;Status zlecenia
+2024-01-10;FIX-001;2024-01-15;Pierwsze nabycie;Kwota;250,00;250,00;15,0000;;Allianz Plan Emerytalny 2055;;Zrealizowane
+2024-02-10;FIX-002;2024-02-15;Kolejne nabycie;Kwota;300,00;300,00;18,0000;;Allianz Plan Emerytalny 2055;;Zrealizowane
+2024-02-10;FIX-003;2024-02-15;Kolejne nabycie;Kwota;225,00;225,00;13,5000;;Allianz Plan Emerytalny 2055;;Zrealizowane
+2024-03-01;FIX-004;2024-03-05;Zamiana;Saldo;;500,00;30,0000;30,0000;Allianz PPK 2055;Allianz Plan Emerytalny 2055;Zrealizowane
+2024-03-25;FIX-005;2024-03-30;Pierwsze nabycie;Kwota;240,00;240,00;14,4000;;Allianz Plan Emerytalny 2055;;Zrealizowane
+2024-04-10;FIX-006;2024-04-15;Kolejne nabycie;Kwota;350,00;350,00;21,0000;;Allianz Plan Emerytalny 2055;;Zrealizowane
+2024-04-10;FIX-007;2024-04-15;Kolejne nabycie;Kwota;262,50;262,50;15,7500;;Allianz Plan Emerytalny 2055;;Zrealizowane
+2024-05-01;FIX-008;2024-05-05;Kolejne nabycie;Kwota;100,00;100,00;6,0000;;Allianz Plan Emerytalny 2055;;W trakcie realizacji

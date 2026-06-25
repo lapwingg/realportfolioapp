@@ -1,0 +1,3 @@
+Data zlecenia;Numer zlecenia;Data wyceny;Typ zlecenia;Typ;Wartość zlecenia;Wartość PLN (transakcji);Liczba jednostek (fundusz źródłowy);Liczba jednostek (fundusz docelowy);Fundusz źródłowy;Fundusz docelowy;Status zlecenia
+2024-02-10;MAL-001;2024-02-15;Kolejne nabycie;Kwota;300,00;300,00;18,0000;;Allianz Plan Emerytalny 2055;;Zrealizowane
+2024-02-10;MAL-002;2024-02-15;Kolejne nabycie;Kwota;abc;abc;13,5000;;Allianz Plan Emerytalny 2055;;Zrealizowane
