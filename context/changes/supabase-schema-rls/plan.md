@@ -308,24 +308,24 @@ Link the local Supabase project to the hosted Supabase project, push the migrati
 
 #### Automated
 
-- [x] 2.1 `npx supabase test db` exits 0 with all pgTAP assertions passing
+- [x] 2.1 `npx supabase test db` exits 0 with all pgTAP assertions passing — 0899abc
 
 #### Manual
 
-- [x] 2.2 Test file reads end-to-end without `// TODO`s or skipped assertions
-- [x] 2.3 `supabase test db` output captured in the PR description
-- [x] 2.4 Sanity-check drill executed: remove `FORCE RLS` on one table → `supabase test db` fails → restore → green; result pasted in PR description; broken state NOT committed
+- [x] 2.2 Test file reads end-to-end without `// TODO`s or skipped assertions — 0899abc
+- [x] 2.3 `supabase test db` output captured in the PR description — 0899abc
+- [x] 2.4 Sanity-check drill executed: remove `FORCE RLS` on one table → `supabase test db` fails → restore → green; result pasted in PR description; broken state NOT committed — 0899abc
 
 ### Phase 3: Hosted project link + generated TypeScript types
 
 #### Automated
 
-- [ ] 3.1 `npx tsc --noEmit` (via `astro check`) passes after `Database` type parametrization
-- [ ] 3.2 `src/lib/database.types.ts` contains `"transactions"`, `"price_snapshots"`, `"contribution_source"`
-- [ ] 3.3 `npm run build` succeeds with the typed client under the Cloudflare adapter
+- [x] 3.1 `npx tsc --noEmit` (via `astro check`) passes after `Database` type parametrization
+- [x] 3.2 `src/lib/database.types.ts` contains `"transactions"`, `"price_snapshots"`, `"contribution_source"`
+- [x] 3.3 `npm run build` succeeds with the typed client under the Cloudflare adapter
 
 #### Manual
 
-- [ ] 3.4 Hosted Supabase dashboard shows both tables, four policies each, FORCE RLS via SQL editor
+- [x] 3.4 Hosted Supabase dashboard shows both tables, four policies each, FORCE RLS via SQL editor
 - [ ] 3.5 Two-user manual isolation check on the deployed app passes
-- [ ] 3.6 README Database section reads coherently end-to-end
+- [x] 3.6 README Database section reads coherently end-to-end

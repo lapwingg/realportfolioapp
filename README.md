@@ -166,6 +166,34 @@ npx supabase db reset # applies all migrations from zero
 npx supabase test db  # runs supabase/tests/*.test.sql via pgTAP
 ```
 
+### Apply migrations to the hosted project
+
+```bash
+npx supabase login                                     # one-time, opens browser
+npx supabase link --project-ref <project-ref>          # ref from dashboard URL
+npx supabase db push --include-all                     # applies new migrations remotely
+npx supabase gen types typescript --linked > src/lib/database.types.ts  # regen types
+```
+
+> If your network blocks outbound TCP 5432 (corporate firewalls / VPN), `db push` will fail with `socket is not connected`. Fall back to pasting each migration into the Supabase Dashboard's **SQL Editor** in order, then keep the CLI's tracker in sync by inserting one row per migration into `supabase_migrations.schema_migrations`. Type generation uses the management API and works even when 5432 is blocked.
+>
+> If your network also intercepts TLS for outbound HTTPS (corporate root CA), the Node-based CLI needs `NODE_EXTRA_CA_CERTS=/path/to/corp-bundle.pem` and the Go-based CLI calls additionally need `SSL_CERT_FILE` set to the same bundle.
+
+### Worker secrets
+
+The deployed Cloudflare Worker reads `SUPABASE_URL` and `SUPABASE_KEY` (the **anon** public key) from Workers Secrets:
+
+```bash
+npx wrangler secret put SUPABASE_URL
+npx wrangler secret put SUPABASE_KEY
+```
+
+The **service-role key is intentionally NOT used** anywhere in this project — server-side requests run under the user's JWT, so RLS policies enforce the per-user access boundary. Uploading the service-role key would create a path that bypasses RLS and weakens the data-isolation NFR.
+
+### Money columns — string-at-runtime, use a decimal library
+
+`gross_amount`, `units`, and `price` are `NUMERIC(20, 4)`. PostgREST may return them as JSON strings or numbers depending on version and value range — even when the generated `database.types.ts` annotates them as `number`, the actual runtime value can be a string. Tax calculations downstream of this slice (S-03) require exact arithmetic per the PRD NFR ("silent rounding errors are not acceptable"); use a decimal library (e.g. `decimal.js`, `big.js`) for any math on these columns, not native JavaScript `number` arithmetic.
+
 ## Deployment
 
 This project deploys to [Cloudflare Workers](https://workers.cloudflare.com/).
