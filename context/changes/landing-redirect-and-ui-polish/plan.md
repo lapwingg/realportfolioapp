@@ -455,9 +455,9 @@ Brak Chromatic/Percy w projekcie. Visual diff manualny przed/po każdej fazie �
 
 #### Automated
 
-- [x] 4.1 `npm run lint` clean
-- [x] 4.2 `npm run build` green
-- [x] 4.3 `grep -n "lucide:" src/pages/dashboard.astro src/pages/setup.astro` matches w obu plikach
+- [x] 4.1 `npm run lint` clean — d72bfa3
+- [x] 4.2 `npm run build` green — d72bfa3
+- [x] 4.3 `grep -n "lucide:" src/pages/dashboard.astro src/pages/setup.astro` matches w obu plikach — d72bfa3
 
 #### Manual
 
