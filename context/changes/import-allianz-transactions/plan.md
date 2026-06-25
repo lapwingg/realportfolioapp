@@ -390,18 +390,18 @@ Add `src/pages/setup.astro` (server-rendered, reads counts under RLS), `src/comp
 
 #### Automated
 
-- [x] 3.1 `npm run lint` passes on all new files
-- [x] 3.2 `npx astro check` passes
-- [x] 3.3 `npm run build` succeeds with the new page included
+- [x] 3.1 `npm run lint` passes on all new files — 1c23001
+- [x] 3.2 `npx astro check` passes — 1c23001
+- [x] 3.3 `npm run build` succeeds with the new page included — 1c23001
 
 #### Manual
 
-- [x] 3.4 Signed-in user A: `/setup` renders with zero counts and an upload form
-- [x] 3.5 Upload sample fixture → banner shows `Imported 6 new, 0 already present` + correct per-source counts
-- [x] 3.6 Re-upload sample fixture → banner shows `Imported 0 new, 6 already present`; counts unchanged
-- [x] 3.7 Upload malformed fixture → error banner with `Row 3: ...`; DB unchanged
-- [x] 3.8 Signed-out request to `/setup` → redirected to `/auth/signin`
-- [x] 3.9 Two-user RLS check: user B sees zero counts on `/setup` after user A imported
-- [x] 3.10 `/dashboard` shows the `Import statement` link and it lands on `/setup`
-- [x] 3.11 Real CSV upload locally → per-source counts spot-check passes
-- [x] 3.12 Hosted-deploy spot check: upload-once / re-upload / malformed cycle behaves identically on the deployed URL
+- [x] 3.4 Signed-in user A: `/setup` renders with zero counts and an upload form — 1c23001
+- [x] 3.5 Upload sample fixture → banner shows `Imported 6 new, 0 already present` + correct per-source counts — 1c23001
+- [x] 3.6 Re-upload sample fixture → banner shows `Imported 0 new, 6 already present`; counts unchanged — 1c23001
+- [x] 3.7 Upload malformed fixture → error banner with `Row 3: ...`; DB unchanged — 1c23001
+- [x] 3.8 Signed-out request to `/setup` → redirected to `/auth/signin` — 1c23001
+- [x] 3.9 Two-user RLS check: user B sees zero counts on `/setup` after user A imported — 1c23001
+- [x] 3.10 `/dashboard` shows the `Import statement` link and it lands on `/setup` — 1c23001
+- [x] 3.11 Real CSV upload locally → per-source counts spot-check passes — 1c23001
+- [x] 3.12 Hosted-deploy spot check: upload-once / re-upload / malformed cycle behaves identically on the deployed URL — 1c23001
