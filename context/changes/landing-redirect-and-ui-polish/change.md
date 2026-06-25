@@ -1,7 +1,7 @@
 ---
 change_id: landing-redirect-and-ui-polish
 title: Redirect / to /auth/signin and polish UI typography, colour, and icons
-status: implementing
+status: implemented
 created: 2026-06-25
 updated: 2026-06-25
 archived_at: null
