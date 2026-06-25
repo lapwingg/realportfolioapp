@@ -56,8 +56,7 @@ export function computeAvailability(birthDate: string | null, today: Date): Scen
     {
       id: "housing",
       // Exclusive on the 45th birthday — turning 45 ends eligibility.
-      // IMPLEMENTER MUST VERIFY against the verified source; flip to `<=`
-      // and update the verify-script Case 12 if inclusive.
+      // See tax-constants.ts HOUSING_LOAN_MAX_AGE for the source citation.
       available: todayIso < housingUntil,
       availableFrom: null,
       availableUntil: housingUntil,
