@@ -48,6 +48,29 @@ jobs:
       # integration suite (same wrangler-dev infra reused via playwright.config.ts
       # webServer). Initially continue-on-error: true; flip to required after
       # 2 green runs (test-plan §5).
+      #
+      # Zero-secrets design: SUPABASE_URL / SUPABASE_KEY / SUPABASE_SERVICE_ROLE_KEY
+      # are captured from the live local Supabase stack via `supabase status -o env`
+      # (well-known dev keys, stable per Supabase CLI version — not real secrets).
+      # E2E_TEST_EMAIL / E2E_TEST_PASSWORD are generated per-run and the seed
+      # script auto-creates the account on first use.
+
+      - name: Capture Supabase env + generate disposable E2E credentials
+        if: ${{ !cancelled() }}
+        # `supabase status -o env` prints `API_URL=…\nANON_KEY=…\nSERVICE_ROLE_KEY=…`.
+        # Map them to the names our scripts expect and append to $GITHUB_ENV
+        # so later steps see them. Disposable creds get a fresh UUID password
+        # each run; the seed script creates the account if missing.
+        run: |
+          set -euo pipefail
+          eval "$(npx supabase status -o env)"
+          {
+            echo "SUPABASE_URL=$API_URL"
+            echo "SUPABASE_KEY=$ANON_KEY"
+            echo "SUPABASE_SERVICE_ROLE_KEY=$SERVICE_ROLE_KEY"
+            echo "E2E_TEST_EMAIL=e2e-ci-${GITHUB_RUN_ID}@example.com"
+            echo "E2E_TEST_PASSWORD=$(uuidgen)"
+          } >> "$GITHUB_ENV"
 
       - name: Install Playwright browsers
         if: ${{ !cancelled() }}
@@ -56,23 +79,11 @@ jobs:
       - name: Seed primary E2E account
         if: ${{ !cancelled() }}
         run: npm run seed:e2e
-        env:
-          E2E_TEST_EMAIL: ${{ secrets.E2E_TEST_EMAIL }}
-          E2E_TEST_PASSWORD: ${{ secrets.E2E_TEST_PASSWORD }}
-          SUPABASE_URL: http://127.0.0.1:54321
-          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY_LOCAL }}
-          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY_LOCAL }}
 
       - name: E2E tests
         if: ${{ !cancelled() }}
         continue-on-error: true
         run: npm run test:e2e
-        env:
-          E2E_TEST_EMAIL: ${{ secrets.E2E_TEST_EMAIL }}
-          E2E_TEST_PASSWORD: ${{ secrets.E2E_TEST_PASSWORD }}
-          SUPABASE_URL: http://127.0.0.1:54321
-          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY_LOCAL }}
-          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY_LOCAL }}
 
       - name: Upload Playwright report on failure
         if: failure()

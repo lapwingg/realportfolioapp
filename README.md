@@ -280,14 +280,9 @@ The CI workflow (`.github/workflows/ci.yml`) expects these repository secrets:
 - `SUPABASE_KEY` — production / hosted Supabase anon key (used by build step).
 - `CLOUDFLARE_API_TOKEN` — required only by the `deploy` job.
 
-E2E (Playwright) job adds:
+The E2E (Playwright) job adds **no additional repository secrets**. It captures Supabase URL / anon key / service-role key directly from `npx supabase status -o env` after the in-CI local stack starts (well-known dev keys, stable per Supabase CLI version — not real secrets), and generates a disposable `E2E_TEST_EMAIL` / `E2E_TEST_PASSWORD` per run. The seed script (`scripts/seed-e2e-primary.ts`) auto-creates the primary test account on first use.
 
-- `E2E_TEST_EMAIL` — dedicated test account email (NOT a personal Supabase user).
-- `E2E_TEST_PASSWORD` — dedicated test account password.
-- `SUPABASE_KEY_LOCAL` — anon key for the in-CI local Supabase stack (`npx supabase start`). Same value the stack prints on a fresh checkout — pinned because `supabase start` keys are stable per Supabase CLI version.
-- `SUPABASE_SERVICE_ROLE_KEY_LOCAL` — service-role key for the in-CI local stack, used by the E2E admin helpers and `scripts/seed-e2e-primary.ts`. NEVER reuse production service-role keys here.
-
-See `scripts/seed-e2e-primary.ts` and `context/foundation/test-plan.md` for context.
+See `context/foundation/test-plan.md` for the wider E2E gate rationale.
 
 ## License
 
