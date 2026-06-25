@@ -50,6 +50,30 @@ export interface Database {
         };
         Relationships: [];
       };
+      profiles: {
+        Row: {
+          birth_date: string | null;
+          id: string;
+          inserted_at: string;
+          updated_at: string;
+          user_id: string;
+        };
+        Insert: {
+          birth_date?: string | null;
+          id?: string;
+          inserted_at?: string;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Update: {
+          birth_date?: string | null;
+          id?: string;
+          inserted_at?: string;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
       transactions: {
         Row: {
           gross_amount: number;
