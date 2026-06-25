@@ -375,33 +375,33 @@ Add `src/pages/setup.astro` (server-rendered, reads counts under RLS), `src/comp
 
 #### Automated
 
-- [x] 2.1 `npm run lint` passes on the new route
-- [x] 2.2 `npx astro check` passes — `.upsert(...).select('id')` types tie out against `Database`
-- [x] 2.3 `npm run build` succeeds — route included in SSR bundle
+- [x] 2.1 `npm run lint` passes on the new route — 73d97bc
+- [x] 2.2 `npx astro check` passes — `.upsert(...).select('id')` types tie out against `Database` — 73d97bc
+- [x] 2.3 `npm run build` succeeds — route included in SSR bundle — 73d97bc
 
 #### Manual
 
-- [x] 2.4 curl POST of sample fixture → `303` to `/setup?imported=6&skipped=0`
-- [x] 2.5 Re-POST of same fixture → `303` to `/setup?imported=0&skipped=6` (all duplicates)
-- [x] 2.6 POST of malformed fixture → `303` to `/setup?error=Row+3%3A...`; zero rows landed in Studio
-- [x] 2.7 Studio shows correctly-tagged rows with non-null `user_id` matching the test user
+- [x] 2.4 curl POST of sample fixture → `303` to `/setup?imported=6&skipped=0` — 73d97bc
+- [x] 2.5 Re-POST of same fixture → `303` to `/setup?imported=0&skipped=6` (all duplicates) — 73d97bc
+- [x] 2.6 POST of malformed fixture → `303` to `/setup?error=Row+3%3A...`; zero rows landed in Studio — 73d97bc
+- [x] 2.7 Studio shows correctly-tagged rows with non-null `user_id` matching the test user — 73d97bc
 
 ### Phase 3: /setup page + middleware + dashboard link
 
 #### Automated
 
-- [ ] 3.1 `npm run lint` passes on all new files
-- [ ] 3.2 `npx astro check` passes
-- [ ] 3.3 `npm run build` succeeds with the new page included
+- [x] 3.1 `npm run lint` passes on all new files
+- [x] 3.2 `npx astro check` passes
+- [x] 3.3 `npm run build` succeeds with the new page included
 
 #### Manual
 
-- [ ] 3.4 Signed-in user A: `/setup` renders with zero counts and an upload form
-- [ ] 3.5 Upload sample fixture → banner shows `Imported 6 new, 0 already present` + correct per-source counts
-- [ ] 3.6 Re-upload sample fixture → banner shows `Imported 0 new, 6 already present`; counts unchanged
-- [ ] 3.7 Upload malformed fixture → error banner with `Row 3: ...`; DB unchanged
-- [ ] 3.8 Signed-out request to `/setup` → redirected to `/auth/signin`
-- [ ] 3.9 Two-user RLS check: user B sees zero counts on `/setup` after user A imported
-- [ ] 3.10 `/dashboard` shows the `Import statement` link and it lands on `/setup`
-- [ ] 3.11 Real CSV upload locally → per-source counts spot-check passes
-- [ ] 3.12 Hosted-deploy spot check: upload-once / re-upload / malformed cycle behaves identically on the deployed URL
+- [x] 3.4 Signed-in user A: `/setup` renders with zero counts and an upload form
+- [x] 3.5 Upload sample fixture → banner shows `Imported 6 new, 0 already present` + correct per-source counts
+- [x] 3.6 Re-upload sample fixture → banner shows `Imported 0 new, 6 already present`; counts unchanged
+- [x] 3.7 Upload malformed fixture → error banner with `Row 3: ...`; DB unchanged
+- [x] 3.8 Signed-out request to `/setup` → redirected to `/auth/signin`
+- [x] 3.9 Two-user RLS check: user B sees zero counts on `/setup` after user A imported
+- [x] 3.10 `/dashboard` shows the `Import statement` link and it lands on `/setup`
+- [x] 3.11 Real CSV upload locally → per-source counts spot-check passes
+- [x] 3.12 Hosted-deploy spot check: upload-once / re-upload / malformed cycle behaves identically on the deployed URL

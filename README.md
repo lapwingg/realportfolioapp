@@ -194,6 +194,14 @@ The **service-role key is intentionally NOT used** anywhere in this project — 
 
 `gross_amount`, `units`, and `price` are `NUMERIC(20, 4)`. PostgREST may return them as JSON strings or numbers depending on version and value range — even when the generated `database.types.ts` annotates them as `number`, the actual runtime value can be a string. Tax calculations downstream of this slice (S-03) require exact arithmetic per the PRD NFR ("silent rounding errors are not acceptable"); use a decimal library (e.g. `decimal.js`, `big.js`) for any math on these columns, not native JavaScript `number` arithmetic.
 
+## Importing transactions
+
+Signed-in users land on `/setup` (linked from `/dashboard`) and upload an Allianz PPK transaction CSV (`Transaction_confirmation_*.csv`). The server parses the semicolon-delimited, Polish-decimal-comma file, filters out `Zamiana` (fund switches) and non-`Zrealizowane` rows, categorises each contribution as `own` / `employer` / `state` via a date-pair + amount-ratio heuristic, then upserts via the natural-key UNIQUE constraint — re-uploading the same file is a no-op.
+
+The parser and categoriser are pure modules under `src/lib/allianz/`. A committed synthetic fixture lives at `tests/fixtures/allianz-sample.csv` (see the sibling `README.md`); run `npm run verify-parser` to exercise it.
+
+**Heuristic caveat**: the categoriser assumes default PPK rates of employee 2% / employer 1.5%. If your rates differ, the per-source split shown in the post-import counts banner will be wrong — re-import after we add explicit rate config in a later slice.
+
 ## Deployment
 
 This project deploys to [Cloudflare Workers](https://workers.cloudflare.com/).

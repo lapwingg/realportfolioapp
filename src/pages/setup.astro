@@ -1,0 +1,109 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import UploadForm from "@/components/setup/UploadForm";
+import { createClient } from "@/lib/supabase";
+
+export const prerender = false;
+
+const params = Astro.url.searchParams;
+const importedRaw = params.get("imported");
+const skippedRaw = params.get("skipped");
+const errorMsg = params.get("error");
+
+const imported = importedRaw === null ? null : Number(importedRaw);
+const skipped = skippedRaw === null ? null : Number(skippedRaw);
+const showSuccess = imported !== null && Number.isFinite(imported);
+
+const supabase = createClient(Astro.request.headers, Astro.cookies);
+
+type SourceKey = "own" | "employer" | "state";
+const counts: Record<SourceKey, { count: number; sum: number }> = {
+  own: { count: 0, sum: 0 },
+  employer: { count: 0, sum: 0 },
+  state: { count: 0, sum: 0 },
+};
+
+let dbError: string | null = null;
+
+if (supabase) {
+  const { data, error } = await supabase.from("transactions").select("source, gross_amount");
+  if (error) {
+    dbError = error.message;
+  } else {
+    for (const row of data) {
+      const key = row.source;
+      counts[key].count += 1;
+      counts[key].sum += parseFloat(String(row.gross_amount));
+    }
+  }
+}
+
+const totalCount = counts.own.count + counts.employer.count + counts.state.count;
+
+const fmt = new Intl.NumberFormat("pl-PL", {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+});
+
+const rows: { key: SourceKey; label: string }[] = [
+  { key: "own", label: "own" },
+  { key: "employer", label: "employer" },
+  { key: "state", label: "state" },
+];
+---
+
+<Layout title="Setup">
+  <div class="bg-cosmic flex min-h-screen items-start justify-center p-4 pt-12">
+    <div class="w-full max-w-xl rounded-2xl border border-white/10 bg-white/10 p-8 text-white backdrop-blur-xl">
+      <h1 class="mb-6 bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-2xl font-bold text-transparent">
+        Setup
+      </h1>
+
+      {
+        errorMsg && (
+          <div class="mb-4 rounded-lg border border-red-400/40 bg-red-500/10 px-4 py-3 text-sm text-red-100">
+            {errorMsg}
+          </div>
+        )
+      }
+
+      {
+        showSuccess && (
+          <div class="mb-4 rounded-lg border border-green-400/40 bg-green-500/10 px-4 py-3 text-sm text-green-100">
+            Imported {imported} new, {skipped ?? 0} already present.
+          </div>
+        )
+      }
+
+      {
+        dbError && (
+          <div class="mb-4 rounded-lg border border-amber-400/40 bg-amber-500/10 px-4 py-3 text-sm text-amber-100">
+            Could not read existing transactions: {dbError}
+          </div>
+        )
+      }
+
+      <section class="mb-6">
+        <h2 class="mb-3 text-sm font-semibold text-blue-100/80">Your contributions so far</h2>
+        <table class="w-full text-sm">
+          <tbody>
+            {
+              rows.map(({ key, label }) => (
+                <tr class="border-b border-white/5">
+                  <td class="py-2 pr-4 text-blue-100/80">{label}</td>
+                  <td class="py-2 pr-4 text-right tabular-nums">{counts[key].count} rows</td>
+                  <td class="py-2 text-right tabular-nums">{fmt.format(counts[key].sum)} zł</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        {totalCount > 0 && <p class="mb-3 text-sm text-blue-100/60">Upload an updated statement →</p>}
+        <UploadForm client:load />
+      </section>
+    </div>
+  </div>
+</Layout>
